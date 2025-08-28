@@ -1,0 +1,5 @@
+{
+    "docker-linter.flake8.enable": true,
+    "docker-linter.flake8.severity": 0,
+    "docker-linter.flake8.container": "flask-web"
+}
