@@ -6,31 +6,18 @@ class television:
     """Displays the game board."""
     def __init__(self):
         self.pygame = pygame.init()
-        self.screen = pygame.display.set_mode((800, 600))
+        self.screen = pygame.display.set_mode((400, 300), pygame.RESIZABLE |
+                                              pygame.SCALED)
         self.clock = pygame.time.Clock()
         self.running = True
         self.game_board = checker_board.checkerBoard()
 
-    def print_board(self):
-        for row in self.game_board.board:
-            line = "| "
-
-            for column in row:
-
-                if column["red"]:
-                    line += "R | "
-                elif column["black"]:
-                    line += "B | "
-                else:
-                    line +="  | "
-
-            print("——————————————————————————————————")
-            print(line)
-
     def display_board(self):
         while self.running:
             self.grab_input()
-            self.screen.fill("purple")
+            self.screen.fill("white")
+            board = pygame.rect.Rect(0, 0, 300, 300)
+            pygame.draw.rect(self.screen, "grey", board)
             pygame.display.flip()
             self.clock.tick(60)
 
@@ -46,5 +33,4 @@ class television:
 
 if __name__ == "__main__":
     game = television()
-    game.print_board()
     game.display_board()
