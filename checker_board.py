@@ -9,6 +9,7 @@ class checkerBoard:
         self.red_turn = True
         self.make_board()
         self.setup_board()
+        self.movable_pieces = self.get_movable_pieces()
 
     def make_board(self):
         self.board = []
@@ -35,7 +36,7 @@ class checkerBoard:
 
     def print_board(self):
         row_num = 0
-        print("———A———B———C———D———E———F———G———H——")
+        print("———0———1———2———3———4———5———6———7——")
         for row in self.board:
 
             line = f"{row_num}| "
@@ -75,11 +76,58 @@ class checkerBoard:
                 movable_pieces.append(piece)
         return movable_pieces
 
-    def move_piece(self, row, column, movable_pieces, destination: list, captured=False):
-        
-        if [row,column] in movable_pieces:
-            if captured: 
+    def move_piece(self, row, column, destination_row, destination_column):
+        """Will move the given piece to the destination if it is a legal move """
+        complete_move = False
+        captured = False
+        if [row, column] in self.movable_pieces:
+            if destination_row > row and (self.board[row][column]["black"] or
+                                          self.board[row][column]["king"]):
+                if abs(destination_column - column) == 1 and [row, column] in self.__get_empty_below__(row, column):
+                    complete_move = True
+                elif abs(destination_column - column) == 2:
+                    possible_end_spaces, captures = self.__get_capture_below__(row, column)
+                    if [destination_row, destination_column] in possible_end_spaces:
+                        if destination_column > column:
+                            self.board[row+1][column+1] = copy.deepcopy(self.blank_piece)
+                            complete_move = True
+                            captured = True
+                        else:
+                            self.board[row+1][column-1] = copy.deepcopy(self.blank_piece)
+                            complete_move = True
+                            captured = True
+            if destination_row < row and (self.board[row][column]["red"] or
+                                          self.board[row][column]["king"]):
+                if abs(destination_column - column) == 1 and [row, column] in self.__get_empty_above__(row, column):
+                    complete_move = True
+                elif abs(destination_column - column) == 2:
+                    possible_end_spaces, captures = self.__get_capture_above__(row, column)
+                    if [destination_row, destination_column] in possible_end_spaces:
+                        if destination_column > column:
+                            self.board[row-1][column+1] = copy.deepcopy(self.blank_piece)
+                            complete_move = True
+                            captured = True
+                        else:
+                            self.board[row-1][column-1] = copy.deepcopy(self.blank_piece)
+                            complete_move = True
+                            captured = True
 
+        
+        if complete_move:
+            self.board[destination_row][destination_column] = copy.deepcopy(self.board[row][column])
+            self.board[row][column] = copy.deepcopy(self.blank_piece)
+            if not captured:
+                self.red_turn = not self.red_turn
+                self.movable_pieces = self.get_movable_pieces()
+        
+        if captured:
+            if (self.board[destination_row][destination_column]["black"] or self.board[destination_row][destination_column]["king"]) and self.__check_capture_below__(destination_row, destination_column):
+                self.movable_pieces = [[destination_row, destination_column]]
+            elif (self.board[destination_row][destination_column]["red"] or self.board[destination_row][destination_column]["king"]) and self.__check_capture_above__(destination_row, destination_column): 
+                self.movable_pieces = [[destination_row, destination_column]]
+            else:
+                self.red_turn = not self.red_turn
+                self.movable_pieces = self.get_movable_pieces()
 
     def get_all_pieces(self):
         possible_pieces = []
@@ -292,8 +340,16 @@ if __name__ == "__main__":
 
     game.board[3][2]["red"] = True
     game.board[2][3]["black"] = True
+    game.movable_pieces = game.get_movable_pieces()
 
     game.print_board()
 
     for piece in game.get_movable_pieces():
         print(piece)
+
+    for i in range(8):
+        for j in range(8):
+            game.move_piece(3, 2, i, j)
+    for piece in game.get_movable_pieces():
+        print(piece)
+    game.print_board()
