@@ -34,7 +34,6 @@ class checkerBoard:
         self.board.reverse()
 
     def print_board(self):
-        
         row_num = 0
         print("———A———B———C———D———E———F———G———H——")
         for row in self.board:
@@ -76,12 +75,17 @@ class checkerBoard:
                 movable_pieces.append(piece)
         return movable_pieces
 
+    def move_piece(self, row, column, movable_pieces, destination: list, captured=False):
+        
+        if [row,column] in movable_pieces:
+            if captured: 
+
+
     def get_all_pieces(self):
         possible_pieces = []
         for row in range(self.board_size):
             for column in range(self.board_size):
-                if (self.board[row][column]["black"] or
-                        self.board[row][column]["red"]):
+                if (self.board[row][column]["black"] or self.board[row][column]["red"]):
                     possible_pieces.append([row, column])
 
         return possible_pieces
