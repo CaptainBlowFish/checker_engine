@@ -77,13 +77,13 @@ class checkerBoard:
         return movable_pieces
 
     def move_piece(self, row, column, destination_row, destination_column):
-        """Will move the given piece to the destination if it is a legal move """
+        """Will move the given piece to the destination if it is a legal move"""
         complete_move = False
         captured = False
         if [row, column] in self.movable_pieces:
             if destination_row > row and (self.board[row][column]["black"] or
                                           self.board[row][column]["king"]):
-                if abs(destination_column - column) == 1 and [row, column] in self.__get_empty_below__(row, column):
+                if abs(destination_column - column) == 1 and [destination_row, destination_column] in self.__get_empty_below__(row, column):
                     complete_move = True
                 elif abs(destination_column - column) == 2:
                     possible_end_spaces, captures = self.__get_capture_below__(row, column)
@@ -98,7 +98,7 @@ class checkerBoard:
                             captured = True
             if destination_row < row and (self.board[row][column]["red"] or
                                           self.board[row][column]["king"]):
-                if abs(destination_column - column) == 1 and [row, column] in self.__get_empty_above__(row, column):
+                if abs(destination_column - column) == 1 and [destination_row, destination_column] in self.__get_empty_above__(row, column):
                     complete_move = True
                 elif abs(destination_column - column) == 2:
                     possible_end_spaces, captures = self.__get_capture_above__(row, column)
@@ -333,23 +333,13 @@ class checkerBoard:
 if __name__ == "__main__":
     game = checkerBoard()
 
-    for row in game.board:
-        for piece in row:
-            piece["red"] = False
-            piece["black"] = False
-
-    game.board[3][2]["red"] = True
-    game.board[2][3]["black"] = True
-    game.movable_pieces = game.get_movable_pieces()
-
-    game.print_board()
-
-    for piece in game.get_movable_pieces():
-        print(piece)
-
-    for i in range(8):
-        for j in range(8):
-            game.move_piece(3, 2, i, j)
-    for piece in game.get_movable_pieces():
-        print(piece)
-    game.print_board()
+    while True:
+        if game.red_turn:
+            print("red Turn")
+        else:
+            print("black Turn")
+        game.print_board()
+        
+        game.move_piece(5, 0, 4, 1)
+        print([4, 1] in game.__get_empty_above__(5, 0))
+        print(input("yay"))
