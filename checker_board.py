@@ -7,6 +7,10 @@ class checkerBoard:
         self.board_size = 8  # standard checker board size
         self.blank_piece = {"red": False, "black": False, "king": False}
         self.red_turn = True
+        self.red_win = False
+        self.black_win = False
+        self.red_captured = 0
+        self.black_captured = 0
         self.make_board()
         self.setup_board()
         self.movable_pieces = self.get_movable_pieces()
@@ -60,7 +64,7 @@ class checkerBoard:
 
         for piece in self.get_player_pieces():
             row, column = piece[0], piece[1]
-            
+
             if self.board[row][column]["king"]:
                 movable = (self.__check_empty_above__(row, column) or
                            self.__check_empty_below__(row, column) or
@@ -74,6 +78,7 @@ class checkerBoard:
                            self.__check_capture_above__(row, column))
             if movable:
                 movable_pieces.append(piece)
+        self.__check_win__(movable_pieces)
         return movable_pieces
 
     def move_piece(self, row, column, destination_row, destination_column):
@@ -89,10 +94,18 @@ class checkerBoard:
                     possible_end_spaces, captures = self.__get_capture_below__(row, column)
                     if [destination_row, destination_column] in possible_end_spaces:
                         if destination_column > column:
+                            if self.board[row+1][column+1]["black"]:
+                                self.black_captured += 1
+                            else:
+                                self.red_captured += 1
                             self.board[row+1][column+1] = copy.deepcopy(self.blank_piece)
                             complete_move = True
                             captured = True
                         else:
+                            if self.board[row+1][column-1]["black"]:
+                                self.black_captured += 1
+                            else:
+                                self.red_captured += 1
                             self.board[row+1][column-1] = copy.deepcopy(self.blank_piece)
                             complete_move = True
                             captured = True
@@ -103,27 +116,37 @@ class checkerBoard:
                 elif abs(destination_column - column) == 2:
                     possible_end_spaces, captures = self.__get_capture_above__(row, column)
                     if [destination_row, destination_column] in possible_end_spaces:
+                        
                         if destination_column > column:
+                            if self.board[row-1][column+1]["black"]:
+                                self.black_captured += 1
+                            else:
+                                self.red_captured += 1
                             self.board[row-1][column+1] = copy.deepcopy(self.blank_piece)
                             complete_move = True
                             captured = True
                         else:
+                            if self.board[row-1][column-1]["black"]:
+                                self.black_captured += 1
+                            else:
+                                self.red_captured += 1
                             self.board[row-1][column-1] = copy.deepcopy(self.blank_piece)
                             complete_move = True
                             captured = True
 
-        
         if complete_move:
             self.board[destination_row][destination_column] = copy.deepcopy(self.board[row][column])
             self.board[row][column] = copy.deepcopy(self.blank_piece)
             if not captured:
                 self.red_turn = not self.red_turn
                 self.movable_pieces = self.get_movable_pieces()
-        
+            if destination_row == 0 or destination_row == self.board_size-1:
+                self.board[destination_row][destination_column]["king"] = True
+
         if captured:
-            if (self.board[destination_row][destination_column]["black"] or self.board[destination_row][destination_column]["king"]) and self.__check_capture_below__(destination_row, destination_column):
+            if (self.board[destination_row][destination_column]["black"] or (self.board[destination_row][destination_column]["king"] and self.board[destination_row][destination_column]["red"])) and self.__check_capture_below__(destination_row, destination_column):
                 self.movable_pieces = [[destination_row, destination_column]]
-            elif (self.board[destination_row][destination_column]["red"] or self.board[destination_row][destination_column]["king"]) and self.__check_capture_above__(destination_row, destination_column): 
+            elif (self.board[destination_row][destination_column]["red"] or (self.board[destination_row][destination_column]["king"] and self.board[destination_row][destination_column]["black"])) and self.__check_capture_above__(destination_row, destination_column): 
                 self.movable_pieces = [[destination_row, destination_column]]
             else:
                 self.red_turn = not self.red_turn
@@ -149,6 +172,13 @@ class checkerBoard:
 
         return possible_pieces
 
+    def __check_win__(self, movable_pieces):
+        if len(movable_pieces) == 0:
+            if self.red_turn:
+                self.black_win = True
+            else:
+                self.red_win = True
+
     def __check_capture_above__(self, row, column):
         """Checks above a given piece if there is any space to move to"""
         can_capture = False
@@ -158,7 +188,7 @@ class checkerBoard:
                         not self.board[row-2][column+2]["red"] and
                         not self.board[row-2][column+2]["black"]):
                     can_capture = True
-            elif column > 1 and row > 1:
+            if column > 1 and row > 1:
                 if self.board[row-1][column-1]["black"] and (
                         not self.board[row-2][column-2]["red"] and
                         not self.board[row-2][column-2]["black"]):
@@ -170,7 +200,7 @@ class checkerBoard:
                         not self.board[row-2][column+2]["red"] and
                         not self.board[row-2][column+2]["black"]):
                     can_capture = True
-            elif column > 1 and row > 1:
+            if column > 1 and row > 1:
                 if self.board[row-1][column-1]["red"] and (
                         not self.board[row-2][column-2]["red"] and
                         not self.board[row-2][column-2]["black"]):
@@ -187,7 +217,7 @@ class checkerBoard:
                         not self.board[row+2][column+2]["red"] and
                         not self.board[row+2][column+2]["black"]):
                     can_capture = True
-            elif column > 1 and row < self.board_size-2:
+            if column > 1 and row < self.board_size-2:
                 if self.board[row+1][column-1]["black"] and (
                         not self.board[row+2][column-2]["red"] and
                         not self.board[row-2][column-2]["black"]):
@@ -199,7 +229,7 @@ class checkerBoard:
                         not self.board[row+2][column+2]["red"] and
                         not self.board[row+2][column+2]["black"]):
                     can_capture = True
-            elif column > 1 and row < self.board_size-2:
+            if column > 1 and row < self.board_size-2:
                 if self.board[row+1][column-1]["red"] and (
                         not self.board[row+2][column-2]["red"] and
                         not self.board[row+2][column-2]["black"]):
@@ -245,7 +275,7 @@ class checkerBoard:
                         not self.board[row-2][column+2]["black"]):
                     captures.append([row-1, column+1])
                     end_spaces.append([row-2, column+2])
-            elif column > 1 and row > 1:
+            if column > 1 and row > 1:
                 if self.board[row-1][column-1]["black"] and (
                         not self.board[row-2][column-2]["red"] and
                         not self.board[row-2][column-2]["black"]):
@@ -259,7 +289,7 @@ class checkerBoard:
                         not self.board[row-2][column+2]["black"]):
                     captures.append([row-1, column+1])
                     end_spaces.append([row-2, column+2])
-            elif column > 1 and row > 1:
+            if column > 1 and row > 1:
                 if self.board[row-1][column-1]["red"] and (
                         not self.board[row-2][column-2]["red"] and
                         not self.board[row-2][column-2]["black"]):
@@ -278,7 +308,7 @@ class checkerBoard:
                         not self.board[row+2][column+2]["black"]):
                     captures.append([row+1, column+1])
                     end_spaces.append([row+2, column+2])
-            elif column > 1 and row < self.board_size-2:
+            if column > 1 and row < self.board_size-2:
                 if self.board[row+1][column-1]["black"] and (
                         not self.board[row+2][column-2]["red"] and
                         not self.board[row-2][column-2]["black"]):
@@ -292,7 +322,7 @@ class checkerBoard:
                         not self.board[row+2][column+2]["black"]):
                     captures.append([row+1, column+1])
                     end_spaces.append([row+2, column+2])
-            elif column > 1 and row < self.board_size-2:
+            if column > 1 and row < self.board_size-2:
                 if self.board[row+1][column-1]["red"] and (
                         not self.board[row+2][column-2]["red"] and
                         not self.board[row+2][column-2]["black"]):
@@ -332,14 +362,8 @@ class checkerBoard:
 
 if __name__ == "__main__":
     game = checkerBoard()
-
-    while True:
-        if game.red_turn:
-            print("red Turn")
-        else:
-            print("black Turn")
-        game.print_board()
-        
-        game.move_piece(5, 0, 4, 1)
-        print([4, 1] in game.__get_empty_above__(5, 0))
-        print(input("yay"))
+    if game.red_turn:
+        print("red Turn")
+    else:
+        print("black Turn")
+    game.print_board()
