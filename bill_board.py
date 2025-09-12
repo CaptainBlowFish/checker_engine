@@ -1,5 +1,4 @@
 import pygame
-from pygame import font
 
 class billBoard:
     """The billboard class"""

@@ -11,6 +11,7 @@ class checkerBoard:
         self.black_win = False
         self.red_captured = 0
         self.black_captured = 0
+        self.turns = 0
         self.make_board()
         self.setup_board()
         self.movable_pieces = self.get_movable_pieces()
@@ -137,6 +138,7 @@ class checkerBoard:
         if complete_move:
             self.board[destination_row][destination_column] = copy.deepcopy(self.board[row][column])
             self.board[row][column] = copy.deepcopy(self.blank_piece)
+            self.turns += 1
             if not captured:
                 self.red_turn = not self.red_turn
                 self.movable_pieces = self.get_movable_pieces()

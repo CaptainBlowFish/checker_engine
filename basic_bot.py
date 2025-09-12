@@ -6,7 +6,7 @@ class basicBot(checker_board.checkerBoard):
     """The 'easy' checkers bot. This will be not using much of any stratagy.
     Just moving randomly and capturing when possible"""
     
-    def bot_move(self):
+    def basic_bot_move(self):
         random.shuffle(self.movable_pieces)
         for piece in self.movable_pieces:
             if (self.board[piece[0]][piece[1]]["red"] or self.board[piece[0]][piece[1]]["king"]) and self.__check_capture_above__(piece[0], piece[1]):

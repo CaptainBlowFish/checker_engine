@@ -1,6 +1,7 @@
 import pygame
 import bill_board
 import basic_bot
+import advanced_bot
 import button
 
 
@@ -12,8 +13,8 @@ class television:
                                               pygame.SCALED)
         self.clock = pygame.time.Clock()
         self.running = True
-        self.game = basic_bot.basicBot()
-
+        #self.game = basic_bot.basicBot()
+        self.game = advanced_bot.advancedBot()
         self.play_again_button = button.Button(self, "play again?")
         self.black_turn_label = bill_board.billBoard(self, "Black Turn")
         self.red_turn_label = bill_board.billBoard(self, "Red Turn")
@@ -33,28 +34,36 @@ class television:
 
     def draw_screen(self):
         while self.running:
-            if not self.game.black_win and not self.game.red_win:
-                if self.game.red_turn:
-                    self.grab_input()
-                else:
-                    self.game.bot_move()
+            self.screen.fill("white")
+            self.draw_board()
+            self.draw_pieces()
 
-                self.screen.fill("white")
+            if not self.game.black_win and not self.game.red_win:
+                # Dictates which color each player will be
+                if self.game.red_turn:  # Red player
+                    self.grab_input()
+                    self.game.bot_move()
+                else:  # Black player
+                    self.game.bot_move()
+                
                 if self.game.red_turn:
                     self.red_turn_label.draw()
                 else:
                     self.black_turn_label.draw()
+            else:
                 if self.game.black_win:
                     self.black_won_label.draw()
                 if self.game.red_win:
                     self.red_won_label.draw()
-                self.draw_board()
-                self.draw_pieces()
-            else:
+
                 self.play_again_button.draw_button()
+                print(self.game.failures)
+                print(self.game.turns)
+                quit()
                 self.grab_input()
+            
             pygame.display.flip()
-            self.clock.tick(5)
+            #self.clock.tick(60)
 
         pygame.quit()
 
@@ -106,7 +115,4 @@ class television:
 
 if __name__ == "__main__":
     game = television()
-    for i in game.game.board:
-        for j in i:
-            j["black"] = False
     game.draw_screen()

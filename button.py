@@ -1,5 +1,4 @@
 import pygame
-from pygame import font
 
 class Button:
     """The button class"""
@@ -11,12 +10,12 @@ class Button:
 
         # Set the dimensions and properties of the button
         self.width, self.height = 200, 50
-        self.button_color = (0,255,0)
-        self.text_color = (255,255,255)
-        self.font= pygame.font.SysFont(None, 48)
+        self.button_color = (0, 255, 0)
+        self.text_color = (255, 255, 255)
+        self.font = pygame.font.SysFont(None, 48)
 
         # Build the button's rect object and center it 
-        self.rect = pygame.Rect(0,0,self.width,self.height)
+        self.rect = pygame.Rect(0, 0, self.width, self.height)
         self.rect.center = self.screen_rect.center
 
         # The button message need to be prepped 
