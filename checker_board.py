@@ -62,23 +62,47 @@ class checkerBoard:
     def get_movable_pieces(self):
         """returns a list of the locations of pieces that can be moved"""
         movable_pieces = []
-
+        captures = False
         for piece in self.get_player_pieces():
             row, column = piece[0], piece[1]
-
             if self.board[row][column]["king"]:
-                movable = (self.__check_empty_above__(row, column) or
-                           self.__check_empty_below__(row, column) or
-                           self.__check_capture_above__(row, column) or
-                           self.__check_capture_below__(row, column))
+                if self.__check_capture_above__(row, column) or self.__check_capture_below__(row, column):
+                    captures = True
             elif self.board[row][column]["black"]:
-                movable = (self.__check_empty_below__(row, column) or
-                           self.__check_capture_below__(row, column))
+                if self.__check_capture_below__(row, column):
+                    captures = True
             else:
-                movable = (self.__check_empty_above__(row, column) or
-                           self.__check_capture_above__(row, column))
-            if movable:
-                movable_pieces.append(piece)
+                if self.__check_capture_above__(row, column):
+                    captures = True
+
+        if captures:
+            for piece in self.get_player_pieces():
+                row, column = piece[0], piece[1]
+                if self.board[row][column]["king"]:
+                    movable = (self.__check_capture_above__(row, column) or
+                            self.__check_capture_below__(row, column))
+                elif self.board[row][column]["black"]:
+                    movable = (self.__check_capture_below__(row, column))
+                else:
+                    movable = (self.__check_capture_above__(row, column))
+                if movable:
+                    movable_pieces.append(piece)
+        else:
+            for piece in self.get_player_pieces():
+                row, column = piece[0], piece[1]
+                if self.board[row][column]["king"]:
+                    movable = (self.__check_empty_above__(row, column) or
+                            self.__check_empty_below__(row, column) or
+                            self.__check_capture_above__(row, column) or
+                            self.__check_capture_below__(row, column))
+                elif self.board[row][column]["black"]:
+                    movable = (self.__check_empty_below__(row, column) or
+                            self.__check_capture_below__(row, column))
+                else:
+                    movable = (self.__check_empty_above__(row, column) or
+                            self.__check_capture_above__(row, column))
+                if movable:
+                    movable_pieces.append(piece)
         self.__check_win__(movable_pieces)
         return movable_pieces
 

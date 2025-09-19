@@ -3,7 +3,7 @@ import bill_board
 import basic_bot
 import advanced_bot
 import button
-
+import json
 
 class television:
     """Displays the game board."""
@@ -42,7 +42,6 @@ class television:
                 # Dictates which color each player will be
                 if self.game.red_turn:  # Red player
                     self.grab_input()
-                    self.game.bot_move()
                 else:  # Black player
                     self.game.bot_move()
                 
@@ -59,11 +58,10 @@ class television:
                 self.play_again_button.draw_button()
                 print(self.game.failures)
                 print(self.game.turns)
-                quit()
                 self.grab_input()
             
             pygame.display.flip()
-            #self.clock.tick(60)
+            self.clock.tick(5)
 
         pygame.quit()
 
@@ -101,6 +99,7 @@ class television:
                     if pygame.Rect.collidepoint(self.play_again_button.rect, mouse_x, mouse_y):
                         self.game.__init__()
                 self.check_board_click(mouse_x, mouse_y)
+                print(self.game.movable_pieces)
             elif event.type == pygame.QUIT:
                 self.running = False
 
@@ -115,4 +114,11 @@ class television:
 
 if __name__ == "__main__":
     game = television()
+    game.game.make_board()
+    game.game.board[5][4]["black"] = True
+    game.game.board[6][3]["red"] = True
+    game.game.board[5][4]["king"] = True
+    game.game.board[3][2]["red"] = True
+    game.game.board[2][1]["black"] = True
+    game.game.movable_pieces = game.game.get_movable_pieces()
     game.draw_screen()
