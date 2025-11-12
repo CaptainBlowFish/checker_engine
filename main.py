@@ -1,39 +1,38 @@
 import pygame
 import bill_board
-import basic_bot
 import advanced_bot
 import button
-import json
+
 
 class television:
     """Displays the game board."""
     def __init__(self):
-        self.pygame = pygame.init()
+        pygame.init()
         self.screen = pygame.display.set_mode((550, 400), pygame.RESIZABLE |
                                               pygame.SCALED)
-        self.clock = pygame.time.Clock()
-        self.running = True
-        #self.game = basic_bot.basicBot()
+        self._clock = pygame.time.Clock()
+        self._running = True
+        # self.game = basic_bot.basicBot()
         self.game = advanced_bot.advancedBot()
-        self.play_again_button = button.Button(self, "play again?")
-        self.black_turn_label = bill_board.billBoard(self, "Black Turn")
-        self.red_turn_label = bill_board.billBoard(self, "Red Turn")
-        self.black_won_label = bill_board.billBoard(self, "Black won")
-        self.red_won_label = bill_board.billBoard(self, "Red won")
+        self._play_again_button = button.Button(self, "play again?")
+        self._black_turn_label = bill_board.billBoard(self, "Black Turn")
+        self._red_turn_label = bill_board.billBoard(self, "Red Turn")
+        self._black_won_label = bill_board.billBoard(self, "Black won")
+        self._red_won_label = bill_board.billBoard(self, "Red won")
 
-        self.checker_board = []
-        self.pieces = []
-        self.square_size = 50
-        self.chosen_piece = {"row": -1, "column": -1}  # -1 is my flag value
+        self._checker_board = []
+        self._pieces = []
+        self._square_size = 50
+        self._chosen_piece = {"row": -1, "column": -1}  # -1 is my flag value
         for width in range(self.game.board_size):
-            self.checker_board.append([])
+            self._checker_board.append([])
             for height in range(self.game.board_size):
-                self.checker_board[width].append(pygame.rect.Rect(
-                    width * self.square_size, height * self.square_size,
-                    self.square_size, self.square_size))
+                self._checker_board[width].append(pygame.rect.Rect(
+                    width * self._square_size, height * self._square_size,
+                    self._square_size, self._square_size))
 
     def draw_screen(self):
-        while self.running:
+        while self._running:
             self.screen.fill("white")
             self.draw_board()
             self.draw_pieces()
@@ -46,29 +45,29 @@ class television:
                     self.game.bot_move()
                 
                 if self.game.red_turn:
-                    self.red_turn_label.draw()
+                    self._red_turn_label.draw()
                 else:
-                    self.black_turn_label.draw()
+                    self._black_turn_label.draw()
             else:
                 if self.game.black_win:
-                    self.black_won_label.draw()
+                    self._black_won_label.draw()
                 if self.game.red_win:
-                    self.red_won_label.draw()
+                    self._red_won_label.draw()
 
-                self.play_again_button.draw_button()
+                self._play_again_button.draw_button()
                 print(self.game.failures)
                 print(self.game.turns)
                 self.grab_input()
             
             pygame.display.flip()
-            self.clock.tick(5)
+            self._clock.tick(5)
 
         pygame.quit()
 
     def draw_board(self):
         white_square = False
         counter = 0
-        for row in self.checker_board:
+        for row in self._checker_board:
             for square in row:
                 if counter % self.game.board_size == 0:
                     white_square = not white_square
@@ -82,13 +81,13 @@ class television:
     def draw_pieces(self):
         for piece in self.game.get_all_pieces():
             if self.game.board[piece[0]][piece[1]]["black"]:
-                self.pieces.append(pygame.draw.circle(self.screen, "black",
+                self._pieces.append(pygame.draw.circle(self.screen, "black",
                     (25+piece[1]*50, 25+piece[0]*50), 20))
             else:
-                self.pieces.append(pygame.draw.circle(self.screen, "red",
+                self._pieces.append(pygame.draw.circle(self.screen, "red",
                     (25+piece[1]*50, 25+piece[0]*50), 20))
             if self.game.board[piece[0]][piece[1]]["king"]:
-                self.pieces.append(pygame.draw.circle(self.screen, "white",
+                self._pieces.append(pygame.draw.circle(self.screen, "white",
                     (25+piece[1]*50, 25+piece[0]*50), 10))
 
     def grab_input(self):
@@ -96,29 +95,28 @@ class television:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 if self.game.black_win or self.game.red_win:
-                    if pygame.Rect.collidepoint(self.play_again_button.rect, mouse_x, mouse_y):
+                    if pygame.Rect.collidepoint(self._play_again_button.rect, mouse_x, mouse_y):
                         self.game.__init__()
                 self.check_board_click(mouse_x, mouse_y)
                 print(self.game.movable_pieces)
             elif event.type == pygame.QUIT:
-                self.running = False
+                self._running = False
 
     def check_board_click(self, mouse_x, mouse_y):
-        for row in range(len(self.checker_board)):
-            for column in range(len(self.checker_board[row])):
-                if pygame.Rect.collidepoint(self.checker_board[row][column], mouse_y, mouse_x) and [row,column] in self.game.movable_pieces:
-                    self.chosen_piece['row'] = row
-                    self.chosen_piece['column'] = column
-                elif pygame.Rect.collidepoint(self.checker_board[row][column], mouse_y, mouse_x):
-                    self.game.move_piece(self.chosen_piece['row'], self.chosen_piece['column'], row, column)
+        for row in range(len(self._checker_board)):
+            for column in range(len(self._checker_board[row])):
+                if pygame.Rect.collidepoint(self._checker_board[row][column], mouse_y, mouse_x) and [row,column] in self.game.movable_pieces:
+                    self._chosen_piece['row'] = row
+                    self._chosen_piece['column'] = column
+                elif pygame.Rect.collidepoint(self._checker_board[row][column],
+                                              mouse_y, mouse_x):
+                    self.game.move_piece(self._chosen_piece['row'],
+                                         self._chosen_piece['column'],
+                                         row, column)
+
 
 if __name__ == "__main__":
     game = television()
     game.game.make_board()
-    game.game.board[5][4]["black"] = True
-    game.game.board[6][3]["red"] = True
-    game.game.board[5][4]["king"] = True
-    game.game.board[3][2]["red"] = True
-    game.game.board[2][1]["black"] = True
-    game.game.movable_pieces = game.game.get_movable_pieces()
+    game.game.setup_board()
     game.draw_screen()

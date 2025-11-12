@@ -3,7 +3,7 @@ import basic_bot
 import copy
 
 class advancedBot(basic_bot.basicBot):
-    """The 'hard' checkers bot. This uses a strategy that looks a few moves ahead. """
+    """The 'hard' checkers bot. This uses a strategy that looks a few moves ahead."""
     def __init__(self):
         super().__init__()
         self.captured_rating = 10
