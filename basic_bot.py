@@ -46,3 +46,10 @@ class basicBot(checker_board.checkerBoard):
                     possible_destinations = self.__get_empty_below__(piece[0], piece[1])
                     destination = random.choice(possible_destinations)
                     self.move_piece(piece[0], piece[1], destination[0], destination[1])
+
+
+if __name__ == "__main__":
+    game = basicBot()
+    while not (game.red_win or game.black_win):
+        game.basic_bot_move()
+        game.print_board()
