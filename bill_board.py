@@ -15,10 +15,10 @@ class billBoard:
         self.text_color = (0, 0, 0)
         self.font = pygame.font.SysFont(None, 40)
 
-        # Build the billboard's rect object and center it 
+        # Build the billboard's rect object and center it
         self.rect = pygame.Rect(400, 0, self.width, self.height)
 
-        # The button message need to be prepped 
+        # The button message need to be prepped
         self._prep_msg(msg)
 
     def _prep_msg(self, msg):

@@ -3,6 +3,7 @@ import copy
 
 class checkerBoard:
     """Makes a standard 8x8 checker board"""
+
     def __init__(self):
         self.board_size = 8  # standard checker board size
         self.blank_piece = {"red": False, "black": False, "king": False}
@@ -29,14 +30,14 @@ class checkerBoard:
         for row in range(rows_per_side):
             offset = not offset
             for column in range(0, self.board_size, 2):
-                self.board[row][column+offset]["black"] = True
+                self.board[row][column + offset]["black"] = True
         self.board.reverse()
 
         offset = True
         for row in range(rows_per_side):
             offset = not offset
             for column in range(0, self.board_size, 2):
-                self.board[row][column+offset]["red"] = True
+                self.board[row][column + offset]["red"] = True
         self.board.reverse()
 
     def print_board(self):
@@ -66,7 +67,9 @@ class checkerBoard:
         for piece in self.get_player_pieces():
             row, column = piece[0], piece[1]
             if self.board[row][column]["king"]:
-                if self.__check_capture_above__(row, column) or self.__check_capture_below__(row, column):
+                if self.__check_capture_above__(
+                    row, column
+                ) or self.__check_capture_below__(row, column):
                     captures = True
             elif self.board[row][column]["black"]:
                 if self.__check_capture_below__(row, column):
@@ -79,28 +82,33 @@ class checkerBoard:
             for piece in self.get_player_pieces():
                 row, column = piece[0], piece[1]
                 if self.board[row][column]["king"]:
-                    movable = (self.__check_capture_above__(row, column) or
-                            self.__check_capture_below__(row, column))
+                    movable = self.__check_capture_above__(
+                        row, column
+                    ) or self.__check_capture_below__(row, column)
                 elif self.board[row][column]["black"]:
-                    movable = (self.__check_capture_below__(row, column))
+                    movable = self.__check_capture_below__(row, column)
                 else:
-                    movable = (self.__check_capture_above__(row, column))
+                    movable = self.__check_capture_above__(row, column)
                 if movable:
                     movable_pieces.append(piece)
         else:
             for piece in self.get_player_pieces():
                 row, column = piece[0], piece[1]
                 if self.board[row][column]["king"]:
-                    movable = (self.__check_empty_above__(row, column) or
-                            self.__check_empty_below__(row, column) or
-                            self.__check_capture_above__(row, column) or
-                            self.__check_capture_below__(row, column))
+                    movable = (
+                        self.__check_empty_above__(row, column)
+                        or self.__check_empty_below__(row, column)
+                        or self.__check_capture_above__(row, column)
+                        or self.__check_capture_below__(row, column)
+                    )
                 elif self.board[row][column]["black"]:
-                    movable = (self.__check_empty_below__(row, column) or
-                            self.__check_capture_below__(row, column))
+                    movable = self.__check_empty_below__(
+                        row, column
+                    ) or self.__check_capture_below__(row, column)
                 else:
-                    movable = (self.__check_empty_above__(row, column) or
-                            self.__check_capture_above__(row, column))
+                    movable = self.__check_empty_above__(
+                        row, column
+                    ) or self.__check_capture_above__(row, column)
                 if movable:
                     movable_pieces.append(piece)
         self.__check_win__(movable_pieces)
@@ -111,68 +119,102 @@ class checkerBoard:
         complete_move = False
         captured = False
         if [row, column] in self.movable_pieces:
-            if destination_row > row and (self.board[row][column]["black"] or
-                                          self.board[row][column]["king"]):
-                if abs(destination_column - column) == 1 and [destination_row, destination_column] in self.__get_empty_below__(row, column):
+            if destination_row > row and (
+                self.board[row][column]["black"] or self.board[row][column]["king"]
+            ):
+                if abs(destination_column - column) == 1 and [
+                    destination_row,
+                    destination_column,
+                ] in self.__get_empty_below__(row, column):
                     complete_move = True
                 elif abs(destination_column - column) == 2:
-                    possible_end_spaces, captures = self.__get_capture_below__(row, column)
+                    possible_end_spaces, captures = self.__get_capture_below__(
+                        row, column
+                    )
                     if [destination_row, destination_column] in possible_end_spaces:
                         if destination_column > column:
-                            if self.board[row+1][column+1]["black"]:
+                            if self.board[row + 1][column + 1]["black"]:
                                 self.black_captured += 1
                             else:
                                 self.red_captured += 1
-                            self.board[row+1][column+1] = copy.deepcopy(self.blank_piece)
+                            self.board[row + 1][column + 1] = copy.deepcopy(
+                                self.blank_piece
+                            )
                             complete_move = True
                             captured = True
                         else:
-                            if self.board[row+1][column-1]["black"]:
+                            if self.board[row + 1][column - 1]["black"]:
                                 self.black_captured += 1
                             else:
                                 self.red_captured += 1
-                            self.board[row+1][column-1] = copy.deepcopy(self.blank_piece)
+                            self.board[row + 1][column - 1] = copy.deepcopy(
+                                self.blank_piece
+                            )
                             complete_move = True
                             captured = True
-            if destination_row < row and (self.board[row][column]["red"] or
-                                          self.board[row][column]["king"]):
-                if abs(destination_column - column) == 1 and [destination_row, destination_column] in self.__get_empty_above__(row, column):
+            if destination_row < row and (
+                self.board[row][column]["red"] or self.board[row][column]["king"]
+            ):
+                if abs(destination_column - column) == 1 and [
+                    destination_row,
+                    destination_column,
+                ] in self.__get_empty_above__(row, column):
                     complete_move = True
                 elif abs(destination_column - column) == 2:
-                    possible_end_spaces, captures = self.__get_capture_above__(row, column)
+                    possible_end_spaces, captures = self.__get_capture_above__(
+                        row, column
+                    )
                     if [destination_row, destination_column] in possible_end_spaces:
-                        
+
                         if destination_column > column:
-                            if self.board[row-1][column+1]["black"]:
+                            if self.board[row - 1][column + 1]["black"]:
                                 self.black_captured += 1
                             else:
                                 self.red_captured += 1
-                            self.board[row-1][column+1] = copy.deepcopy(self.blank_piece)
+                            self.board[row - 1][column + 1] = copy.deepcopy(
+                                self.blank_piece
+                            )
                             complete_move = True
                             captured = True
                         else:
-                            if self.board[row-1][column-1]["black"]:
+                            if self.board[row - 1][column - 1]["black"]:
                                 self.black_captured += 1
                             else:
                                 self.red_captured += 1
-                            self.board[row-1][column-1] = copy.deepcopy(self.blank_piece)
+                            self.board[row - 1][column - 1] = copy.deepcopy(
+                                self.blank_piece
+                            )
                             complete_move = True
                             captured = True
 
         if complete_move:
-            self.board[destination_row][destination_column] = copy.deepcopy(self.board[row][column])
+            self.board[destination_row][destination_column] = copy.deepcopy(
+                self.board[row][column]
+            )
             self.board[row][column] = copy.deepcopy(self.blank_piece)
             self.turns += 1
             if not captured:
                 self.red_turn = not self.red_turn
                 self.movable_pieces = self.get_movable_pieces()
-            if destination_row == 0 or destination_row == self.board_size-1:
+            if destination_row == 0 or destination_row == self.board_size - 1:
                 self.board[destination_row][destination_column]["king"] = True
 
         if captured:
-            if (self.board[destination_row][destination_column]["black"] or (self.board[destination_row][destination_column]["king"] and self.board[destination_row][destination_column]["red"])) and self.__check_capture_below__(destination_row, destination_column):
+            if (
+                self.board[destination_row][destination_column]["black"]
+                or (
+                    self.board[destination_row][destination_column]["king"]
+                    and self.board[destination_row][destination_column]["red"]
+                )
+            ) and self.__check_capture_below__(destination_row, destination_column):
                 self.movable_pieces = [[destination_row, destination_column]]
-            elif (self.board[destination_row][destination_column]["red"] or (self.board[destination_row][destination_column]["king"] and self.board[destination_row][destination_column]["black"])) and self.__check_capture_above__(destination_row, destination_column): 
+            elif (
+                self.board[destination_row][destination_column]["red"]
+                or (
+                    self.board[destination_row][destination_column]["king"]
+                    and self.board[destination_row][destination_column]["black"]
+                )
+            ) and self.__check_capture_above__(destination_row, destination_column):
                 self.movable_pieces = [[destination_row, destination_column]]
             else:
                 self.red_turn = not self.red_turn
@@ -182,7 +224,7 @@ class checkerBoard:
         possible_pieces = []
         for row in range(self.board_size):
             for column in range(self.board_size):
-                if (self.board[row][column]["black"] or self.board[row][column]["red"]):
+                if self.board[row][column]["black"] or self.board[row][column]["red"]:
                     possible_pieces.append([row, column])
 
         return possible_pieces
@@ -209,27 +251,31 @@ class checkerBoard:
         """Checks above a given piece if there is any space to move to"""
         can_capture = False
         if self.board[row][column]["red"]:
-            if column < self.board_size-2 and row > 1:
-                if self.board[row-1][column+1]["black"] and (
-                        not self.board[row-2][column+2]["red"] and
-                        not self.board[row-2][column+2]["black"]):
+            if column < self.board_size - 2 and row > 1:
+                if self.board[row - 1][column + 1]["black"] and (
+                    not self.board[row - 2][column + 2]["red"]
+                    and not self.board[row - 2][column + 2]["black"]
+                ):
                     can_capture = True
             if column > 1 and row > 1:
-                if self.board[row-1][column-1]["black"] and (
-                        not self.board[row-2][column-2]["red"] and
-                        not self.board[row-2][column-2]["black"]):
+                if self.board[row - 1][column - 1]["black"] and (
+                    not self.board[row - 2][column - 2]["red"]
+                    and not self.board[row - 2][column - 2]["black"]
+                ):
                     can_capture = True
 
         elif self.board[row][column]["black"]:
-            if column < self.board_size-2 and row > 1:
-                if self.board[row-1][column+1]["red"] and (
-                        not self.board[row-2][column+2]["red"] and
-                        not self.board[row-2][column+2]["black"]):
+            if column < self.board_size - 2 and row > 1:
+                if self.board[row - 1][column + 1]["red"] and (
+                    not self.board[row - 2][column + 2]["red"]
+                    and not self.board[row - 2][column + 2]["black"]
+                ):
                     can_capture = True
             if column > 1 and row > 1:
-                if self.board[row-1][column-1]["red"] and (
-                        not self.board[row-2][column-2]["red"] and
-                        not self.board[row-2][column-2]["black"]):
+                if self.board[row - 1][column - 1]["red"] and (
+                    not self.board[row - 2][column - 2]["red"]
+                    and not self.board[row - 2][column - 2]["black"]
+                ):
                     can_capture = True
 
         return can_capture
@@ -238,27 +284,31 @@ class checkerBoard:
         """Checks above a given piece if there is any space to move to"""
         can_capture = False
         if self.board[row][column]["red"]:
-            if column < self.board_size-2 and row < self.board_size-2:
-                if self.board[row+1][column+1]["black"] and (
-                        not self.board[row+2][column+2]["red"] and
-                        not self.board[row+2][column+2]["black"]):
+            if column < self.board_size - 2 and row < self.board_size - 2:
+                if self.board[row + 1][column + 1]["black"] and (
+                    not self.board[row + 2][column + 2]["red"]
+                    and not self.board[row + 2][column + 2]["black"]
+                ):
                     can_capture = True
-            if column > 1 and row < self.board_size-2:
-                if self.board[row+1][column-1]["black"] and (
-                        not self.board[row+2][column-2]["red"] and
-                        not self.board[row-2][column-2]["black"]):
+            if column > 1 and row < self.board_size - 2:
+                if self.board[row + 1][column - 1]["black"] and (
+                    not self.board[row + 2][column - 2]["red"]
+                    and not self.board[row - 2][column - 2]["black"]
+                ):
                     can_capture = True
 
         elif self.board[row][column]["black"]:
-            if column < self.board_size-2 and row < self.board_size-2:
-                if self.board[row+1][column+1]["red"] and (
-                        not self.board[row+2][column+2]["red"] and
-                        not self.board[row+2][column+2]["black"]):
+            if column < self.board_size - 2 and row < self.board_size - 2:
+                if self.board[row + 1][column + 1]["red"] and (
+                    not self.board[row + 2][column + 2]["red"]
+                    and not self.board[row + 2][column + 2]["black"]
+                ):
                     can_capture = True
-            if column > 1 and row < self.board_size-2:
-                if self.board[row+1][column-1]["red"] and (
-                        not self.board[row+2][column-2]["red"] and
-                        not self.board[row+2][column-2]["black"]):
+            if column > 1 and row < self.board_size - 2:
+                if self.board[row + 1][column - 1]["red"] and (
+                    not self.board[row + 2][column - 2]["red"]
+                    and not self.board[row + 2][column - 2]["black"]
+                ):
                     can_capture = True
 
         return can_capture
@@ -266,13 +316,17 @@ class checkerBoard:
     def __check_empty_above__(self, row, column):
         """Checks above a given piece if there is any space to move to"""
         movable = False
-        if column < self.board_size-1 and row > 0:
-            if (not self.board[row-1][column+1]["red"] and
-                    not self.board[row-1][column+1]["black"]):
+        if column < self.board_size - 1 and row > 0:
+            if (
+                not self.board[row - 1][column + 1]["red"]
+                and not self.board[row - 1][column + 1]["black"]
+            ):
                 movable = True
         if column > 0 and row > 0:
-            if (not self.board[row-1][column-1]["red"] and
-                    not self.board[row-1][column-1]["black"]):
+            if (
+                not self.board[row - 1][column - 1]["red"]
+                and not self.board[row - 1][column - 1]["black"]
+            ):
                 movable = True
 
         return movable
@@ -280,13 +334,17 @@ class checkerBoard:
     def __check_empty_below__(self, row, column):
         """Checks above a given piece if there is any space to move to"""
         movable = False
-        if column < self.board_size-1 and row < self.board_size-1:
-            if (not self.board[row+1][column+1]["red"] and
-                    not self.board[row+1][column+1]["black"]):
+        if column < self.board_size - 1 and row < self.board_size - 1:
+            if (
+                not self.board[row + 1][column + 1]["red"]
+                and not self.board[row + 1][column + 1]["black"]
+            ):
                 movable = True
-        if column > 0 and row < self.board_size-1:
-            if (not self.board[row+1][column-1]["red"] and
-                    not self.board[row+1][column-1]["black"]):
+        if column > 0 and row < self.board_size - 1:
+            if (
+                not self.board[row + 1][column - 1]["red"]
+                and not self.board[row + 1][column - 1]["black"]
+            ):
                 movable = True
 
         return movable
@@ -295,32 +353,36 @@ class checkerBoard:
         """Checks above a given piece if there is any space to move to"""
         end_spaces, captures = [], []
         if self.board[row][column]["red"]:
-            if column < self.board_size-2 and row > 1:
-                if self.board[row-1][column+1]["black"] and (
-                        not self.board[row-2][column+2]["red"] and
-                        not self.board[row-2][column+2]["black"]):
-                    captures.append([row-1, column+1])
-                    end_spaces.append([row-2, column+2])
+            if column < self.board_size - 2 and row > 1:
+                if self.board[row - 1][column + 1]["black"] and (
+                    not self.board[row - 2][column + 2]["red"]
+                    and not self.board[row - 2][column + 2]["black"]
+                ):
+                    captures.append([row - 1, column + 1])
+                    end_spaces.append([row - 2, column + 2])
             if column > 1 and row > 1:
-                if self.board[row-1][column-1]["black"] and (
-                        not self.board[row-2][column-2]["red"] and
-                        not self.board[row-2][column-2]["black"]):
-                    captures.append([row-1, column-1])
-                    end_spaces.append([row-2, column-2])
+                if self.board[row - 1][column - 1]["black"] and (
+                    not self.board[row - 2][column - 2]["red"]
+                    and not self.board[row - 2][column - 2]["black"]
+                ):
+                    captures.append([row - 1, column - 1])
+                    end_spaces.append([row - 2, column - 2])
 
         elif self.board[row][column]["black"]:
-            if column < self.board_size-2 and row > 1:
-                if self.board[row-1][column+1]["red"] and (
-                        not self.board[row-2][column+2]["red"] and
-                        not self.board[row-2][column+2]["black"]):
-                    captures.append([row-1, column+1])
-                    end_spaces.append([row-2, column+2])
+            if column < self.board_size - 2 and row > 1:
+                if self.board[row - 1][column + 1]["red"] and (
+                    not self.board[row - 2][column + 2]["red"]
+                    and not self.board[row - 2][column + 2]["black"]
+                ):
+                    captures.append([row - 1, column + 1])
+                    end_spaces.append([row - 2, column + 2])
             if column > 1 and row > 1:
-                if self.board[row-1][column-1]["red"] and (
-                        not self.board[row-2][column-2]["red"] and
-                        not self.board[row-2][column-2]["black"]):
-                    captures.append([row-1, column-1])
-                    end_spaces.append([row-2, column-2])
+                if self.board[row - 1][column - 1]["red"] and (
+                    not self.board[row - 2][column - 2]["red"]
+                    and not self.board[row - 2][column - 2]["black"]
+                ):
+                    captures.append([row - 1, column - 1])
+                    end_spaces.append([row - 2, column - 2])
 
         return end_spaces, captures
 
@@ -328,60 +390,72 @@ class checkerBoard:
         """Checks above a given piece if there is any space to move to"""
         end_spaces, captures = [], []
         if self.board[row][column]["red"]:
-            if column < self.board_size-2 and row < self.board_size-2:
-                if self.board[row+1][column+1]["black"] and (
-                        not self.board[row+2][column+2]["red"] and
-                        not self.board[row+2][column+2]["black"]):
-                    captures.append([row+1, column+1])
-                    end_spaces.append([row+2, column+2])
-            if column > 1 and row < self.board_size-2:
-                if self.board[row+1][column-1]["black"] and (
-                        not self.board[row+2][column-2]["red"] and
-                        not self.board[row-2][column-2]["black"]):
-                    captures.append([row+1, column-1])
-                    end_spaces.append([row+2, column-2])
+            if column < self.board_size - 2 and row < self.board_size - 2:
+                if self.board[row + 1][column + 1]["black"] and (
+                    not self.board[row + 2][column + 2]["red"]
+                    and not self.board[row + 2][column + 2]["black"]
+                ):
+                    captures.append([row + 1, column + 1])
+                    end_spaces.append([row + 2, column + 2])
+            if column > 1 and row < self.board_size - 2:
+                if self.board[row + 1][column - 1]["black"] and (
+                    not self.board[row + 2][column - 2]["red"]
+                    and not self.board[row - 2][column - 2]["black"]
+                ):
+                    captures.append([row + 1, column - 1])
+                    end_spaces.append([row + 2, column - 2])
 
         elif self.board[row][column]["black"]:
-            if column < self.board_size-2 and row < self.board_size-2:
-                if self.board[row+1][column+1]["red"] and (
-                        not self.board[row+2][column+2]["red"] and
-                        not self.board[row+2][column+2]["black"]):
-                    captures.append([row+1, column+1])
-                    end_spaces.append([row+2, column+2])
-            if column > 1 and row < self.board_size-2:
-                if self.board[row+1][column-1]["red"] and (
-                        not self.board[row+2][column-2]["red"] and
-                        not self.board[row+2][column-2]["black"]):
-                    captures.append([row+1, column-1])
-                    end_spaces.append([row+2, column-2])
+            if column < self.board_size - 2 and row < self.board_size - 2:
+                if self.board[row + 1][column + 1]["red"] and (
+                    not self.board[row + 2][column + 2]["red"]
+                    and not self.board[row + 2][column + 2]["black"]
+                ):
+                    captures.append([row + 1, column + 1])
+                    end_spaces.append([row + 2, column + 2])
+            if column > 1 and row < self.board_size - 2:
+                if self.board[row + 1][column - 1]["red"] and (
+                    not self.board[row + 2][column - 2]["red"]
+                    and not self.board[row + 2][column - 2]["black"]
+                ):
+                    captures.append([row + 1, column - 1])
+                    end_spaces.append([row + 2, column - 2])
 
         return end_spaces, captures
 
     def __get_empty_above__(self, row, column):
         """returns empty spaces that the given piece can move to"""
         spaces = []
-        if column < self.board_size-1 and row > 0:
-            if (not self.board[row-1][column+1]["red"] and
-                    not self.board[row-1][column+1]["black"]):
-                spaces.append([row-1, column+1])
+        if column < self.board_size - 1 and row > 0:
+            if (
+                not self.board[row - 1][column + 1]["red"]
+                and not self.board[row - 1][column + 1]["black"]
+            ):
+                spaces.append([row - 1, column + 1])
         if column > 0 and row > 0:
-            if (not self.board[row-1][column-1]["red"] and
-                    not self.board[row-1][column-1]["black"]):
-                spaces.append([row-1, column-1])
+            if (
+                not self.board[row - 1][column - 1]["red"]
+                and not self.board[row - 1][column - 1]["black"]
+            ):
+                spaces.append([row - 1, column - 1])
 
         return spaces
 
     def __get_empty_below__(self, row, column):
         """returns empty spaces that the given piece can move to"""
         spaces = []
-        if column < self.board_size-1 and row < self.board_size-1:
-            if (not self.board[row+1][column+1]["red"] and
-                    not self.board[row+1][column+1]["black"]):
-                spaces.append([row+1, column+1])
-        if column > 0 and row < self.board_size-1:
-            if (not self.board[row+1][column-1]["red"] and
-                    not self.board[row+1][column-1]["black"]):
-                spaces.append([row+1, column-1])
+        if column < self.board_size - 1 and row < self.board_size - 1:
+            if (
+                not self.board[row + 1][column + 1]["red"]
+                and not self.board[row + 1][column + 1]["black"]
+            ):
+                spaces.append([row + 1, column + 1])
+        if column > 0 and row < self.board_size - 1:
+            if (
+                not self.board[row + 1][column - 1]["red"]
+                and not self.board[row + 1][column - 1]["black"]
+            ):
+                spaces.append([row + 1, column - 1])
 
         return spaces
 
