@@ -123,10 +123,6 @@ class advancedBot(basic_bot.basicBot):
 if __name__ == "__main__":
     game = advancedBot()
     while not (game.red_win or game.black_win):
-        if game.red_turn:
-            print("Red Turn")
-        else:
-            print("Black Turn")
         game.print_board()
         game.bot_move()
 
@@ -135,4 +131,4 @@ if __name__ == "__main__":
     else:
         print("Black Won ", end="")
     print(f"in {game.turns} turns!")
-    game.print_board()
+    game.print_board(False)

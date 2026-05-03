@@ -40,7 +40,13 @@ class checkerBoard:
                 self.board[row][column + offset]["red"] = True
         self.board.reverse()
 
-    def print_board(self):
+    def print_board(self, print_turn=True):
+        if print_turn:
+            if self.red_turn:
+                print("red Turn")
+            else:
+                print("black Turn")
+
         row_num = 0
         print("———0———1———2———3———4———5———6———7——")
         for row in self.board:
@@ -462,8 +468,4 @@ class checkerBoard:
 
 if __name__ == "__main__":
     game = checkerBoard()
-    if game.red_turn:
-        print("red Turn")
-    else:
-        print("black Turn")
     game.print_board()
