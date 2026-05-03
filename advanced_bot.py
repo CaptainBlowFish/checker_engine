@@ -20,13 +20,13 @@ class advancedBot(basic_bot.basicBot):
             if self.__check_capture_below__(row, column):
                 captures = self.__get_capture_below__(row, column)
                 possible_moves.append(captures[0])
-            if self.__check_empty_below__(row, column):
+            elif self.__check_empty_below__(row, column):
                 possible_moves.append(self.__get_empty_below__(row, column))
         if self.board[row][column]["red"] or self.board[row][column]["king"]:
             if self.__check_capture_above__(row, column):
                 captures = self.__get_capture_above__(row, column)
                 possible_moves.append(captures[0])
-            if self.__check_empty_above__(row, column):
+            elif self.__check_empty_above__(row, column):
                 possible_moves.append(self.__get_empty_above__(row, column))
 
         return possible_moves
@@ -50,10 +50,11 @@ class advancedBot(basic_bot.basicBot):
         return possible_moves
 
     def bot_move(self):
-        best_rating = 0
+
+        best_move, best_rating = self.get_best_move_for_piece(self.movable_pieces[0])
         for piece in range(len(self.movable_pieces)):
             move, rating = self.get_best_move_for_piece(self.movable_pieces[piece])
-            if rating >= best_rating:
+            if rating > best_rating:
                 best_rating = rating
                 best_move = move
 
@@ -122,5 +123,16 @@ class advancedBot(basic_bot.basicBot):
 if __name__ == "__main__":
     game = advancedBot()
     while not (game.red_win or game.black_win):
-        game.bot_move()
+        if game.red_turn:
+            print("Red Turn")
+        else:
+            print("Black Turn")
         game.print_board()
+        game.bot_move()
+
+    if game.red_win:
+        print("Red Won ", end="")
+    else:
+        print("Black Won ", end="")
+    print(f"in {game.turns} turns!")
+    game.print_board()
