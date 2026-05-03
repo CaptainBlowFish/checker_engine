@@ -86,6 +86,18 @@ class television:
                 white_square = not white_square
 
     def draw_pieces(self):
+
+        # highlight chosen piece
+        pygame.draw.circle(
+            self.screen,
+            (255, 255, 0, 60),
+            (
+                25 + self._chosen_piece["column"] * 50,
+                25 + self._chosen_piece["row"] * 50,
+            ),
+            21,
+        )
+
         for piece in self.game.get_all_pieces():
             if self.game.board[piece[0]][piece[1]]["black"]:
                 self._pieces.append(
@@ -146,6 +158,8 @@ class television:
                         row,
                         column,
                     )
+                    self._chosen_piece["row"] = -1
+                    self._chosen_piece["column"] = -1
 
 
 if __name__ == "__main__":
