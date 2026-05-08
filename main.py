@@ -85,7 +85,7 @@ class television:
                     pygame.draw.rect(self.screen, "grey", square)
                 white_square = not white_square
 
-    def draw_pieces(self):
+    def draw_pieces(self, show_piece_mobility=False):
 
         # highlight chosen piece
         pygame.draw.circle(
