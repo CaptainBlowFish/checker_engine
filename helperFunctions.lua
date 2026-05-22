@@ -51,11 +51,11 @@ function table.equals(tbl, otherTbl)
 end
 
 ---makes a deep copy of a table
----@param object table
+---@param tbl table
 ---@return table
-function table.deepCopy(object)
+function table.deepCopy(tbl)
     local copy = {}
-    for key, value in pairs(object) do
+    for key, value in pairs(tbl) do
         if type(value) == "table" then
             copy[key] = table.deepCopy(value)
         else

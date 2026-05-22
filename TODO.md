@@ -1,6 +1,6 @@
 # Things that must be done
 Rewrite everything possibly in lua or C++ some object oriented language
-* I have to add proper turn enforcement
+* add king piece type
 ## I gots to redo the checker_board module
 This is mainly so that I can show debugging info:
 * Rework board rules

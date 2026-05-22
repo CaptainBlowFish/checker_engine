@@ -75,7 +75,7 @@ function board:printBoard(printTurn, showPieceMoves)
                 line = line .. "  | "
             else
                 local possibleMoves = #square:getPossibleMoves(self)
-                if possibleMoves > 0 then
+                if square.pieceName == "king" then
                     line = line .. "\27[1m"
                 end
                 if square.isRed then
@@ -136,9 +136,9 @@ function board:setupCheckers(rowsPerSide)
         offset = not offset
         for column = 1, self.width, 2 do
             if offset then
-                self.playarea[row][column + 1] = checkerPiece.init(false, coordinate.init(row, column + 1))
+                self.playarea[row][column + 1] = baseCheckerPiece.init(false, coordinate.init(row, column + 1))
             else
-                self.playarea[row][column] = checkerPiece.init(false, coordinate.init(row, column))
+                self.playarea[row][column] = baseCheckerPiece.init(false, coordinate.init(row, column))
             end
         end
     end
@@ -148,9 +148,9 @@ function board:setupCheckers(rowsPerSide)
         offset = not offset
         for column = 1, self.width, 2 do
             if offset then
-                self.playarea[row][column + 1] = checkerPiece.init(true, coordinate.init(row, column + 1))
+                self.playarea[row][column + 1] = baseCheckerPiece.init(true, coordinate.init(row, column + 1))
             else
-                self.playarea[row][column] = checkerPiece.init(true, coordinate.init(row, column))
+                self.playarea[row][column] = baseCheckerPiece.init(true, coordinate.init(row, column))
             end
         end
     end
