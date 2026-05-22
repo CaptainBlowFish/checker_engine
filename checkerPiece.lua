@@ -6,6 +6,7 @@ dofile("move.lua")
 ---@field isRed boolean
 ---@field position coordinate postition on the game board
 ---@field canCapture boolean
+---@field mustMove boolean used to enforce manditory multiple captures
 checkerPiece = {}
 
 
@@ -18,6 +19,7 @@ function checkerPiece.init(isRed, position)
     self.isRed = isRed
     self.position = position
     self.canCapture = false
+    self.mustMove = false
 
     return self
 end
@@ -87,16 +89,23 @@ end
 ---@return boolean
 function checkerPiece:move(board, destination)
     local possibleMoves = self:getPossibleMoves(board)
+    local captured = false
     for _, possMove in pairs(possibleMoves) do
         for key, value in pairs(possMove.steps) do
             if table.equals(destination, value) then
+                self.mustMove = false
                 for k, v in pairs(possMove.captures) do
                     board.playarea[v.row][v.column]:capture(board)
+                    captured = true
                 end
                 local temp = table.deepCopy(self)
                 temp.position = table.deepCopy(destination)
-                board.playarea[destination.row][destination.column] = temp
 
+                local nextPossibleMoves = temp:getPossibleMoves(board)
+                if captured and #nextPossibleMoves >= 1 and #nextPossibleMoves[1].captures >= 1 then
+                    temp.mustMove = true
+                end
+                board.playarea[destination.row][destination.column] = temp
                 board.playarea[self.position.row][self.position.column] = {}
                 return true
             end

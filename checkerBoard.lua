@@ -46,7 +46,8 @@ end
 
 ---will print the current board to the console
 ---@param printTurn boolean
-function board:printBoard(printTurn)
+---@param showPieceMoves boolean
+function board:printBoard(printTurn, showPieceMoves)
     if printTurn then
         if self.redTurn then
             print("red turn")
@@ -72,17 +73,27 @@ function board:printBoard(printTurn)
         for j, square in ipairs(row) do
             if square.isRed == nil then -- will be nil since it is undefined in blank spots
                 line = line .. "  | "
-            elseif square.isRed then
-                if #square:getPossibleMoves(self) > 0 then
-                    line = line .. "\27[1m"
-                end
-                line = line .. "\27[31mR"
-                line = line .. "\27[0m | "
             else
-                if #square:getPossibleMoves(self) > 0 then
+                local possibleMoves = #square:getPossibleMoves(self)
+                if possibleMoves > 0 then
                     line = line .. "\27[1m"
                 end
-                line = line .. "\27[34mB"
+                if square.isRed then
+                    line = line .. "\27[31m"
+                else
+                    line = line .. "\27[34m"
+                end
+
+                if showPieceMoves then
+                    line = line .. possibleMoves
+                else
+                    if square.isRed then
+                        line = line .. "R"
+                    else
+                        line = line .. "B"
+                    end
+                end
+
                 line = line .. "\27[0m | "
             end
         end
@@ -95,7 +106,7 @@ function board:terminalGame()
     self:setupCheckers()
 
     while true do
-        self:printBoard(true)
+        self:printBoard(true, true)
         print("Choose a piece")
         print("row:")
         local row = tonumber(io.read())
@@ -109,7 +120,7 @@ function board:terminalGame()
             local drow = tonumber(io.read(), 10)
             print("column:")
             local dcolumn = tonumber(io.read(), 10)
-            if not self.playarea[row][column]:move(self, coordinate.init(drow, dcolumn)) then
+            if not self:makeMove(self.playarea[row][column].position, coordinate.init(drow, dcolumn)) then
                 print("\27[1m\27[31mMOVE NOT POSSIBLE!\27[0m")
             end
         end
@@ -150,10 +161,41 @@ end
 ---@param destination coordinate
 ---@return boolean
 function board:makeMove(start, destination)
-    if self.playarea[start.row][start.column].isRed == nil then
+    local pieceIsRed = self.playarea[start.row][start.column].isRed
+    ---checkes if there is a piece to move
+    if pieceIsRed == nil then
         return false
     end
-    return self.playarea[start.row][start.column]:makeMove(self, destination)
+
+    ---checkes if it is the proper turn
+    if self.redTurn ~= pieceIsRed then
+        return false
+    end
+
+    ---makes sure only pieces marked as mustMove can be moved
+    if self:mustMoves(self.redTurn) and not self.playarea[start.row][start.column].mustMove then
+        return false
+    end
+
+    local moveSuccess = self.playarea[start.row][start.column]:move(self, destination)
+    if moveSuccess and not self.playarea[destination.row][destination.column].mustMove then
+        self.redTurn = not self.redTurn
+    end
+    return moveSuccess
+end
+
+---checks the board for pieces that are marked as mustMove
+---@param red boolean if true checks for red mustMoves; false checks for black
+---@return boolean
+function board:mustMoves(red)
+    for _, row in pairs(self.playarea) do
+        for key, square in pairs(row) do
+            if square.isRed == red and square.mustMove then
+                return true
+            end
+        end
+    end
+    return false
 end
 
 local game = board.init()
