@@ -1,5 +1,5 @@
-import checker_board
-import basic_bot
+import pythonAttempt.checker_board as checker_board
+import pythonAttempt.basic_bot as basic_bot
 import copy
 
 

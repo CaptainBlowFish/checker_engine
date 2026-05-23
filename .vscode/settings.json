@@ -1,9 +1,22 @@
 {
-    "docker-linter.flake8.enable": true,
-    "docker-linter.flake8.severity": 0,
-    "docker-linter.flake8.container": "flask-web",
-    "Lua.diagnostics.globals": [
-        "piece",
-        "kingCheckerPiece"
-    ]
+  "docker-linter.flake8.enable": true,
+  "docker-linter.flake8.severity": 0,
+  "docker-linter.flake8.container": "flask-web",
+  "Lua.diagnostics.globals": [
+    "piece",
+    "kingCheckerPiece"
+  ],
+  "Lua.workspace.library": [
+    "${3rd}/love2d/library",
+    ".vscode/types"
+  ],
+  "Lua.runtime.version": "LuaJIT",
+  "Lua.runtime.special": {
+    "love.filesystem.load": "loadfile"
+  },
+  "Lua.workspace.checkThirdParty": "Apply",
+  "Lua.diagnostics.disable": [
+    "duplicate-set-field",
+    "lowercase-global"
+  ]
 }

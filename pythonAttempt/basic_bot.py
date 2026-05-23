@@ -1,4 +1,4 @@
-import checker_board
+import pythonAttempt.checker_board as checker_board
 import random
 
 

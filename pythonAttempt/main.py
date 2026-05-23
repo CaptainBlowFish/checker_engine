@@ -1,7 +1,7 @@
 import pygame
-import bill_board
-import advanced_bot
-import button
+import pythonAttempt.bill_board as bill_board
+import pythonAttempt.advanced_bot as advanced_bot
+import pythonAttempt.button as button
 
 
 class television:
