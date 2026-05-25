@@ -116,6 +116,7 @@ function baseCheckerPiece:move(board, destination)
                 else
                     board.playarea[destination.row][destination.column] = temp
                 end
+                ---@diagnostic disable-next-line: missing-fields
                 board.playarea[self.position.row][self.position.column] = {}
                 return true
             end
@@ -133,6 +134,7 @@ function baseCheckerPiece:capture(board)
     else
         board.blackCaptured = board.blackCaptured + 1
     end
+    ---@diagnostic disable-next-line: missing-fields
     board.playarea[self.position.row][self.position.column] = {}
 end
 

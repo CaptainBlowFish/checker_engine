@@ -2,8 +2,9 @@ dofile("checkerPiece.lua")
 dofile("move.lua")
 dofile("helperFunctions.lua")
 
+
 ---@class board
----@field playarea table 2d array representing all the spots on a board
+---@field playarea baseCheckerPiece[][] 2d array representing all the spots on a board
 ---@field redTurn boolean it will always be someone's turn
 ---@field redWin boolean
 ---@field blackWin boolean
@@ -197,6 +198,3 @@ function board:mustMoves(red)
     end
     return false
 end
-
-local game = board.init()
-game:terminalGame()
