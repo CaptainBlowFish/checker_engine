@@ -198,3 +198,6 @@ function board:mustMoves(red)
     end
     return false
 end
+
+--- game = board.init()
+--- game:terminalGame()

@@ -42,7 +42,7 @@ function baseCheckerPiece:check(board, blanks, captures, close, far)
             table.insert(blanks, move.init(self.position))
             blanks[#blanks]:addStep(close)
         elseif board.playarea[close.row][close.column].isRed ~= self.isRed then
-            if far:isPositive() and close:lessThan(board.width, board.height) then
+            if far:isPositive() and far:lessThan(board.width, board.height) then
                 if board.playarea[far.row][far.column].isRed == nil then
                     table.insert(captures, move.init(self.position))
                     captures[#captures]:addCapture(coordinate.init(close.row, close.column))
