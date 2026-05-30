@@ -33,7 +33,7 @@ end
 ---@param row integer
 ---@param column integer
 ---@return boolean
-function coordinate:within(row, column)
+function coordinate:lessThan(row, column)
     column = column or math.maxinteger
     row = row or math.maxinteger
     return self.column <= column and self.row <= row

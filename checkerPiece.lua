@@ -37,12 +37,12 @@ end
 ---@param close coordinate
 ---@param far coordinate
 function baseCheckerPiece:check(board, blanks, captures, close, far)
-    if close:isPositive() and close:within(board.width, board.height) then
+    if close:isPositive() and close:lessThan(board.width, board.height) then
         if board.playarea[close.row][close.column].isRed == nil then
             table.insert(blanks, move.init(self.position))
             blanks[#blanks]:addStep(close)
         elseif board.playarea[close.row][close.column].isRed ~= self.isRed then
-            if far:isPositive() and close:within(board.width, board.height) then
+            if far:isPositive() and close:lessThan(board.width, board.height) then
                 if board.playarea[far.row][far.column].isRed == nil then
                     table.insert(captures, move.init(self.position))
                     captures[#captures]:addCapture(coordinate.init(close.row, close.column))
