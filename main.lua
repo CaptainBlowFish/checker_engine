@@ -26,6 +26,7 @@ function love.load()
         boardImage = love.graphics.newImage("graphics/checkerBoard.png"),
         redPieceImage = love.graphics.newImage("graphics/checker.png"),
         blackPieceImage = love.graphics.newImage("graphics/checkerAlt.png"),
+        yellowPieceImage = love.graphics.newImage("graphics/checkerYellowed.png"),
         xPos = 0,
         yPos = 0,
         tileWidth = 40,
@@ -50,22 +51,22 @@ function love.mousepressed(x, y, button)
         math.ceil((x - boardGraphics.yPos - boardGraphics.boarder) / boardGraphics.tileHeight)
     )
     if button == 1 then
-        print("(" .. x, "," .. y .. ")")
-        print(table.tostring(mousePos))
+        --print("(" .. x, "," .. y .. ")")
+        --print(table.tostring(mousePos))
         if player.selectedPiece:isPositive() and player.selectedPiece:lessThan(game.height, game.width) then
             if game.playarea[player.selectedPiece.row][player.selectedPiece.column].isRed ~= nil then
                 if game:makeMove(player.selectedPiece, mousePos) then
-                    print("move Made")
+                    --print("move Made")
                     player.selectedPiece.row = -1
                     player.selectedPiece.column = -1
                 else
-                    print("\27[1m\27[31mMOVE NOT POSSIBLE!\27[0m")
+                    --print("\27[1m\27[31mMOVE NOT POSSIBLE!\27[0m")
                     player.selectedPiece.row = -1
                     player.selectedPiece.column = -1
                 end
             elseif game.playarea[mousePos.row][mousePos.column].isRed ~= nil then
                 player.selectedPiece = mousePos
-                print("piece chosen")
+                --print("piece chosen")
             else
                 player.selectedPiece.row = -1
                 player.selectedPiece.column = -1
@@ -73,11 +74,11 @@ function love.mousepressed(x, y, button)
         else
             if game.playarea[mousePos.row][mousePos.column].isRed ~= nil then
                 player.selectedPiece = mousePos
-                print("piece chosen")
+                --print("piece chosen")
             else
                 player.selectedPiece.row = -1
                 player.selectedPiece.column = -1
-                print("Pointer reset")
+                --print("Pointer reset")
             end
         end
     end
@@ -88,10 +89,30 @@ function love.update(dt)
 end
 
 function love.draw()
-    --- board
     love.graphics.clear()
+    --- board
     love.graphics.draw(boardGraphics.boardImage, boardGraphics.xPos, boardGraphics.yPos)
 
+    --- draw the highlights
+    if player.selectedPiece:isPositive() and player.selectedPiece:lessThan(game.height, game.width) then
+        selected = game.playarea[player.selectedPiece.row][player.selectedPiece.column]
+        if selected.isRed or not selected.isRed then
+            local possibleMoves = selected:getPossibleMoves(game)
+
+            for __, posMove in pairs(possibleMoves) do
+                for _, step in pairs(posMove.steps) do
+                    love.graphics.draw(boardGraphics.yellowPieceImage,
+                        boardGraphics.xPos + (step.column - 1) * boardGraphics.tileWidth +
+                        boardGraphics.boarder +
+                        boardGraphics.pieceInset,
+                        boardGraphics.yPos + (step.row - 1) * boardGraphics.tileHeight +
+                        boardGraphics.boarder + boardGraphics.pieceInset)
+                end
+            end
+        end
+    end
+
+    --- draw pieces
     for _, row in pairs(game.playarea) do
         for k, square in pairs(row) do
             if square.isRed ~= nil then
