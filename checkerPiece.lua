@@ -32,8 +32,8 @@ end
 
 ---checks for a capture and normal move
 ---@param board board
----@param blanks table
----@param captures table
+---@param blanks move[]
+---@param captures move[]
 ---@param close coordinate
 ---@param far coordinate
 function baseCheckerPiece:check(board, blanks, captures, close, far)
@@ -55,10 +55,10 @@ end
 
 ---gets the possible moves for a piece
 ---@param board board
----@return table @the possible moves that a piece can take in the current board state
+---@return move[] @the possible moves that a piece can take in the current board state
 function baseCheckerPiece:getPossibleMoves(board)
-    local blanks = {}   --- all the possible moves for the piece that don't capture any others
-    local captures = {} --- all possible moves that capture another piece
+    local blanks = {} ---@type move[] all the possible moves for the piece that don't capture any others
+    local captures = {} ---@type move[] all possible moves that capture another piece
 
 
 
