@@ -166,7 +166,7 @@ end
 
 ---gets the possible moves for a king piece
 ---@param board board
----@return table @the possible moves that a king piece can take in the current board state
+---@return move[] @the possible moves that a king piece can take in the current board state
 function kingCheckerPiece:getPossibleMoves(board)
     local blanks = {}   --- all the possible moves for the piece that don't capture any others
     local captures = {} --- all possible moves that capture another piece
