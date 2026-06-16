@@ -3,9 +3,6 @@ dofile("checkerPiece.lua")
 dofile("move.lua")
 dofile("helperFunctions.lua")
 
-
-if os.getenv("LOVE2D_TOOLS") then pcall(require, "_love2d_tools_bridge") end
-
 function love.load()
     game = board.init()
     game:setupCheckers()
@@ -95,7 +92,7 @@ function love.draw()
 
     --- draw the highlights
     if player.selectedPiece:isPositive() and player.selectedPiece:lessThan(game.height, game.width) then
-        selected = game.playarea[player.selectedPiece.row][player.selectedPiece.column]
+        local selected = game.playarea[player.selectedPiece.row][player.selectedPiece.column]
         if selected.isRed or not selected.isRed then
             local possibleMoves = selected:getPossibleMoves(game)
 
