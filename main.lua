@@ -44,7 +44,7 @@ function love.mousepressed(x, y, button)
                 player.selectedPiece.row = -1
                 player.selectedPiece.column = -1
             end
-        else
+        elseif mousePos:lessThan(game.height, game.width) then
             if game.playarea[mousePos.row][mousePos.column].isRed ~= nil then
                 player.selectedPiece = mousePos
                 --print("piece chosen")

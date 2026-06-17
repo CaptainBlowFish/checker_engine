@@ -32,7 +32,7 @@ boardGraphics = {
     pieceInsetW = 4,
     pieceInsetH = 4,
     scaleW = 1,
-    scaleY = 1
+    scaleH = 1
 }
 boardGraphics.width = boardGraphics.boardImage:getWidth()
 boardGraphics.height = boardGraphics.boardImage:getWidth()
@@ -42,8 +42,8 @@ boardGraphics.height = boardGraphics.boardImage:getWidth()
 ---@return boardGraphics
 function boardGraphics.init(screenWidth, screenHeight)
     local self = table.deepCopy(boardGraphics)
-    self.prevScreenWidth = screenWidth
-    self.prevScreenHeight = screenHeight
+    self.originalScreenWidth = screenWidth
+    self.originalScreenHeight = screenHeight
 
     return self
 end
@@ -60,4 +60,8 @@ function boardGraphics:resize(screenWidth, screenHeight)
     self.pieceInsetH = boardGraphics.pieceInsetH * self.scaleH
     self.width = boardGraphics.width * self.scaleW
     self.height = boardGraphics.height * self.scaleH
+    print("scaleW " .. self.scaleW)
+    print("scaleH " .. self.scaleH)
+    print("width  " .. screenWidth)
+    print("height " .. screenHeight .. "\n")
 end
