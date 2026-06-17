@@ -2,39 +2,15 @@ dofile("checkerBoard.lua")
 dofile("checkerPiece.lua")
 dofile("move.lua")
 dofile("helperFunctions.lua")
-
+dofile("boardGraphics.lua")
 function love.load()
     game = board.init()
     game:setupCheckers()
+    local screenWidth = 480
+    local screenHeight = 340
+    love.window.setMode(screenWidth, screenHeight, { resizable = true, vsync = false, minwidth = 480, minheight = 340 })
+    gameGraphics = boardGraphics.init(screenWidth, screenHeight)
 
-    ---@class boardGraphics holds the checkerBoard graphics
-    ---@field boardImage love.Image
-    ---@field redPieceImage love.Image
-    ---@field blackPieceImage love.Image
-    ---@field xPos number
-    ---@field yPos number
-    ---@field tileWidth number
-    ---@field tileHeight number
-    ---@field boarder number
-    ---@field pieceInset number
-    ---@field width number
-    ---@field height number
-    boardGraphics = {
-        boardImage = love.graphics.newImage("graphics/checkerBoard.png"),
-        redPieceImage = love.graphics.newImage("graphics/checker.png"),
-        blackPieceImage = love.graphics.newImage("graphics/checkerAlt.png"),
-        yellowPieceImage = love.graphics.newImage("graphics/checkerYellowed.png"),
-        xPos = 0,
-        yPos = 0,
-        tileWidth = 40,
-        tileHeight = 40,
-        boarder = 10,
-        pieceInset = 4,
-        width = 0,
-        height = 0
-    }
-    boardGraphics.width = boardGraphics.boardImage:getWidth()
-    boardGraphics.height = boardGraphics.boardImage:getHeight()
     ---@class player holds all info reguarding the player
     ---@field selectedPiece coordinate
     player = {
@@ -44,8 +20,8 @@ end
 
 function love.mousepressed(x, y, button)
     local mousePos = coordinate.init(
-        math.ceil((y - boardGraphics.xPos - boardGraphics.boarder) / boardGraphics.tileWidth),
-        math.ceil((x - boardGraphics.yPos - boardGraphics.boarder) / boardGraphics.tileHeight)
+        math.ceil((y - gameGraphics.xPos - gameGraphics.boarderWidth) / gameGraphics.tileWidth),
+        math.ceil((x - gameGraphics.yPos - gameGraphics.boarderHeight) / gameGraphics.tileHeight)
     )
     if button == 1 then
         --print("(" .. x, "," .. y .. ")")
@@ -85,10 +61,15 @@ function love.update(dt)
 
 end
 
+function love.resize(w, h)
+    gameGraphics:resize(w, h)
+end
+
 function love.draw()
     love.graphics.clear()
     --- board
-    love.graphics.draw(boardGraphics.boardImage, boardGraphics.xPos, boardGraphics.yPos)
+    love.graphics.draw(gameGraphics.boardImage, gameGraphics.xPos, gameGraphics.yPos, nil,
+        gameGraphics.scaleW, gameGraphics.scaleH)
 
     --- draw the highlights
     if player.selectedPiece:isPositive() and player.selectedPiece:lessThan(game.height, game.width) then
@@ -98,12 +79,13 @@ function love.draw()
 
             for __, posMove in pairs(possibleMoves) do
                 for _, step in pairs(posMove.steps) do
-                    love.graphics.draw(boardGraphics.yellowPieceImage,
-                        boardGraphics.xPos + (step.column - 1) * boardGraphics.tileWidth +
-                        boardGraphics.boarder +
-                        boardGraphics.pieceInset,
-                        boardGraphics.yPos + (step.row - 1) * boardGraphics.tileHeight +
-                        boardGraphics.boarder + boardGraphics.pieceInset)
+                    love.graphics.draw(gameGraphics.yellowPieceImage,
+                        gameGraphics.xPos + (step.column - 1) * gameGraphics.tileWidth +
+                        gameGraphics.boarderWidth +
+                        gameGraphics.pieceInsetW,
+                        gameGraphics.yPos + (step.row - 1) * gameGraphics.tileHeight +
+                        gameGraphics.boarderHeight + gameGraphics.pieceInsetH, nil,
+                        gameGraphics.scaleW, gameGraphics.scaleH)
                 end
             end
         end
@@ -114,19 +96,21 @@ function love.draw()
         for k, square in pairs(row) do
             if square.isRed ~= nil then
                 if square.isRed then
-                    love.graphics.draw(boardGraphics.redPieceImage,
-                        boardGraphics.xPos + (square.position.column - 1) * boardGraphics.tileWidth +
-                        boardGraphics.boarder +
-                        boardGraphics.pieceInset,
-                        boardGraphics.yPos + (square.position.row - 1) * boardGraphics.tileHeight +
-                        boardGraphics.boarder + boardGraphics.pieceInset)
+                    love.graphics.draw(gameGraphics.redPieceImage,
+                        gameGraphics.xPos + (square.position.column - 1) * gameGraphics.tileWidth +
+                        gameGraphics.boarderWidth +
+                        gameGraphics.pieceInsetW,
+                        gameGraphics.yPos + (square.position.row - 1) * gameGraphics.tileHeight +
+                        gameGraphics.boarderHeight + gameGraphics.pieceInsetH, nil,
+                        gameGraphics.scaleW, gameGraphics.scaleH)
                 else
-                    love.graphics.draw(boardGraphics.blackPieceImage,
-                        boardGraphics.xPos + (square.position.column - 1) * boardGraphics.tileWidth +
-                        boardGraphics.boarder +
-                        boardGraphics.pieceInset,
-                        boardGraphics.yPos + (square.position.row - 1) * boardGraphics.tileHeight +
-                        boardGraphics.boarder + boardGraphics.pieceInset)
+                    love.graphics.draw(gameGraphics.blackPieceImage,
+                        gameGraphics.xPos + (square.position.column - 1) * gameGraphics.tileWidth +
+                        gameGraphics.boarderWidth +
+                        gameGraphics.pieceInsetW,
+                        gameGraphics.yPos + (square.position.row - 1) * gameGraphics.tileHeight +
+                        gameGraphics.boarderHeight + gameGraphics.pieceInsetH, nil,
+                        gameGraphics.scaleW, gameGraphics.scaleH)
                 end
             end
         end
