@@ -1,3 +1,5 @@
+if arg[#arg] == "vsc_debug" then require("lldebugger").start() end
+
 dofile("checkerBoard.lua")
 dofile("checkerPiece.lua")
 dofile("move.lua")
@@ -20,9 +22,11 @@ end
 
 function love.mousepressed(x, y, button)
     local mousePos = coordinate.init(
-        math.ceil((y - gameGraphics.xPos - gameGraphics.boarderWidth) / gameGraphics.tileWidth),
-        math.ceil((x - gameGraphics.yPos - gameGraphics.boarderHeight) / gameGraphics.tileHeight)
+        math.ceil((y - gameGraphics.yPos - gameGraphics.boarderHeight) / gameGraphics.tileHeight),
+        math.ceil((x - gameGraphics.xPos - gameGraphics.boarderWidth) / gameGraphics.tileWidth)
     )
+    print("Row:" .. mousePos.row)
+    print("Col:" .. mousePos.column)
     if button == 1 then
         --print("(" .. x, "," .. y .. ")")
         --print(table.tostring(mousePos))
