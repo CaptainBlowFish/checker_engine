@@ -111,7 +111,7 @@ function baseCheckerPiece:move(board, destination)
                 if captured and #nextPossibleMoves >= 1 and #nextPossibleMoves[1].captures >= 1 then
                     temp.mustMove = true
                 end
-                if destination.row == #board.playarea or destination.row == 0 then
+                if destination.row == #board.playarea or destination.row == 1 then
                     board.playarea[destination.row][destination.column] = kingCheckerPiece.init(temp)
                 else
                     board.playarea[destination.row][destination.column] = temp

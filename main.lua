@@ -66,7 +66,15 @@ function love.update(dt)
 end
 
 function love.resize(w, h)
-    gameGraphics:resize(w, h)
+    local originalAspectRatio = gameGraphics.originalScreenWidth / gameGraphics.originalScreenHeight
+    local newAspectRatio = w / h
+    if originalAspectRatio > newAspectRatio then
+        gameGraphics:resize(w, w / originalAspectRatio)
+    elseif originalAspectRatio < newAspectRatio then
+        gameGraphics:resize(h * originalAspectRatio, h)
+    else
+        gameGraphics:resize(w, h)
+    end
 end
 
 function love.draw()
@@ -99,23 +107,27 @@ function love.draw()
     for _, row in pairs(game.playarea) do
         for k, square in pairs(row) do
             if square.isRed ~= nil then
+                local pieceImage = nil
                 if square.isRed then
-                    love.graphics.draw(gameGraphics.redPieceImage,
-                        gameGraphics.xPos + (square.position.column - 1) * gameGraphics.tileWidth +
-                        gameGraphics.boarderWidth +
-                        gameGraphics.pieceInsetW,
-                        gameGraphics.yPos + (square.position.row - 1) * gameGraphics.tileHeight +
-                        gameGraphics.boarderHeight + gameGraphics.pieceInsetH, nil,
-                        gameGraphics.scaleW, gameGraphics.scaleH)
+                    if square.pieceName == "king" then
+                        pieceImage = gameGraphics.redKingPieceImage
+                    else
+                        pieceImage = gameGraphics.redPieceImage
+                    end
                 else
-                    love.graphics.draw(gameGraphics.blackPieceImage,
-                        gameGraphics.xPos + (square.position.column - 1) * gameGraphics.tileWidth +
-                        gameGraphics.boarderWidth +
-                        gameGraphics.pieceInsetW,
-                        gameGraphics.yPos + (square.position.row - 1) * gameGraphics.tileHeight +
-                        gameGraphics.boarderHeight + gameGraphics.pieceInsetH, nil,
-                        gameGraphics.scaleW, gameGraphics.scaleH)
+                    if square.pieceName == "king" then
+                        pieceImage = gameGraphics.blackKingPieceImage
+                    else
+                        pieceImage = gameGraphics.blackPieceImage
+                    end
                 end
+                love.graphics.draw(pieceImage,
+                    gameGraphics.xPos + (square.position.column - 1) * gameGraphics.tileWidth +
+                    gameGraphics.boarderWidth +
+                    gameGraphics.pieceInsetW,
+                    gameGraphics.yPos + (square.position.row - 1) * gameGraphics.tileHeight +
+                    gameGraphics.boarderHeight + gameGraphics.pieceInsetH, nil,
+                    gameGraphics.scaleW, gameGraphics.scaleH)
             end
         end
     end
