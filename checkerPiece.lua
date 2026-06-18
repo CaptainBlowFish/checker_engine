@@ -47,6 +47,7 @@ function baseCheckerPiece:check(board, blanks, captures, close, far)
                     table.insert(captures, move.init(self.position))
                     captures[#captures]:addCapture(coordinate.init(close.row, close.column))
                     captures[#captures]:addStep(coordinate.init(far.row, far.column))
+                    self.canCapture = true
                 end
             end
         end
@@ -59,6 +60,8 @@ end
 function baseCheckerPiece:getPossibleMoves(board)
     local blanks = {} ---@type move[] all the possible moves for the piece that don't capture any others
     local captures = {} ---@type move[] all possible moves that capture another piece
+
+    self.canCapture = false ---enables the ability to check the whole board for pieces that are movable
 
 
 

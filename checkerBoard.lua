@@ -178,6 +178,12 @@ function board:makeMove(start, destination)
         return false
     end
 
+    ---enforces the must capture if possible rule
+    if self:canCaptures(self.redTurn) and not self.playarea[start.row][start.column].canCapture then
+        return false
+    end
+
+    --attempts to make the move
     local moveSuccess = self.playarea[start.row][start.column]:move(self, destination)
     if moveSuccess and not self.playarea[destination.row][destination.column].mustMove then
         self.redTurn = not self.redTurn
@@ -192,6 +198,20 @@ function board:mustMoves(red)
     for _, row in pairs(self.playarea) do
         for key, square in pairs(row) do
             if square.isRed == red and square.mustMove then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+------checks the board for pieces that are marked as canCapture
+---@param red boolean if true checks for red canCaptures; false checks for black
+---@return boolean
+function board:canCaptures(red)
+    for _, row in pairs(self.playarea) do
+        for key, square in pairs(row) do
+            if square.isRed == red and square.canCapture then
                 return true
             end
         end
