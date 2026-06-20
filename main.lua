@@ -5,13 +5,19 @@ dofile("checkerPiece.lua")
 dofile("move.lua")
 dofile("helperFunctions.lua")
 dofile("boardGraphics.lua")
+dofile("config.lua")
 function love.load()
     game = board.init()
     game:setupCheckers()
     local screenWidth = 480
     local screenHeight = 340
-    love.window.setMode(screenWidth, screenHeight, { resizable = true, vsync = false, minwidth = 480, minheight = 340 })
     gameGraphics = boardGraphics.init(screenWidth, screenHeight)
+    love.window.setMode(screenWidth, screenHeight, { resizable = true, vsync = false, minwidth = 480, minheight = 340 })
+
+    ---font
+    font = love.graphics.newImageFont("graphics/font.png",
+        " abcdefghijklmnopqrstuvwxyz" .. "ABCDEFGHIJKLMNOPQRSTUVWXYZ" .. "0123456789.,!?'\"")
+    love.graphics.setFont(font)
 
     ---@class player holds all info reguarding the player
     ---@field selectedPiece coordinate
