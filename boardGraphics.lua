@@ -2,8 +2,12 @@ dofile("helperFunctions.lua")
 
 ---@class boardGraphics holds the checkerBoard graphics
 ---@field boardImage love.Image
+---@field backDrop love.Image
 ---@field redPieceImage love.Image
 ---@field blackPieceImage love.Image
+---@field redKingPieceImage love.Image
+---@field blackKingPieceImage love.Image
+---@field yellowPieceImage love.Image
 ---@field xPos number
 ---@field yPos number
 ---@field tileWidth number
@@ -19,6 +23,7 @@ dofile("helperFunctions.lua")
 ---@field originalScreenWidth number
 ---@field originalScreenHeight number
 boardGraphics = {
+    backDrop = love.graphics.newImage("graphics/backDrop.png"),
     boardImage = love.graphics.newImage("graphics/checkerBoard.png"),
     redPieceImage = love.graphics.newImage("graphics/checker.png"),
     blackPieceImage = love.graphics.newImage("graphics/checkerAlt.png"),

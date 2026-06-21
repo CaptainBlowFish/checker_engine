@@ -84,6 +84,10 @@ end
 
 function love.draw()
     love.graphics.clear()
+    --- backdrop
+    love.graphics.draw(gameGraphics.backDrop, gameGraphics.xPos, gameGraphics.yPos, nil,
+        gameGraphics.scaleW, gameGraphics.scaleH)
+
     --- board
     love.graphics.draw(gameGraphics.boardImage, gameGraphics.xPos, gameGraphics.yPos, nil,
         gameGraphics.scaleW, gameGraphics.scaleH)
@@ -138,10 +142,39 @@ function love.draw()
     end
 
     --- UI/statistics
-    local fontScale = 1 / 4
-    if game.redTurn then
-        love.graphics.print(" Player 1", 340, 10, 0, fontScale, fontScale)
-    else
-        love.graphics.print(" Player 2", 340, 10, 0, fontScale, fontScale)
+    do
+        local textOffset = 10
+        local capturedGraphicYOffset = 60
+        local fontScale = 1 / 4
+        local textSx = fontScale * gameGraphics.scaleW
+        local textSy = fontScale * gameGraphics.scaleH
+
+        --- black captured
+        local x = gameGraphics.width + gameGraphics.xPos + (textOffset) * gameGraphics.scaleW
+        local y = gameGraphics.yPos + capturedGraphicYOffset * gameGraphics.scaleH + gameGraphics.boarderHeight
+        love.graphics.draw(gameGraphics.blackPieceImage, x, y, nil,
+            gameGraphics.scaleW, gameGraphics.scaleH)
+
+        love.graphics.print("x" .. tostring(game.blackCaptured), x + gameGraphics.tileWidth, y, nil,
+            textSx, textSy)
+
+        --- red captured
+        y = y + gameGraphics.tileHeight
+        love.graphics.draw(gameGraphics.redPieceImage, x, y, nil,
+            gameGraphics.scaleW, gameGraphics.scaleH)
+
+        love.graphics.print("x" .. tostring(game.redCaptured), x + gameGraphics.tileWidth, y, nil,
+            textSx, textSy)
+
+        --- turn indicator
+        local text = "Player "
+        if game.redTurn then
+            text = text .. "1"
+        else
+            text = text .. "2"
+        end
+        love.graphics.print(text, x,
+            textOffset + gameGraphics.yPos,
+            nil, textSx, textSy)
     end
 end
