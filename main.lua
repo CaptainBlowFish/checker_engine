@@ -5,7 +5,6 @@ dofile("checkerPiece.lua")
 dofile("move.lua")
 dofile("helperFunctions.lua")
 dofile("boardGraphics.lua")
-dofile("config.lua")
 function love.load()
     game = board.init()
     game:setupCheckers()
@@ -136,5 +135,13 @@ function love.draw()
                     gameGraphics.scaleW, gameGraphics.scaleH)
             end
         end
+    end
+
+    --- UI/statistics
+    local fontScale = 1 / 4
+    if game.redTurn then
+        love.graphics.print(" Player 1", 340, 10, 0, fontScale, fontScale)
+    else
+        love.graphics.print(" Player 2", 340, 10, 0, fontScale, fontScale)
     end
 end

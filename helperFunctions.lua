@@ -33,7 +33,6 @@ function table.tostring(tbl, indents)
 end
 
 function table.equals(tbl, otherTbl)
-    local isEqual = true
     for key, value in pairs(tbl) do
         if type(value) == type(otherTbl[key]) then
             if type(value) == "table" then
