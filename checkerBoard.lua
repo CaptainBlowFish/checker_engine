@@ -174,12 +174,12 @@ function board:makeMove(start, destination)
     end
 
     ---makes sure only pieces marked as mustMove can be moved
-    if self:mustMoves(self.redTurn) and not self.playarea[start.row][start.column].mustMove then
+    if self:mustMoves(pieceIsRed) and not self.playarea[start.row][start.column].mustMove then
         return false
     end
 
     ---enforces the must capture if possible rule
-    if self:canCaptures(self.redTurn) and not self.playarea[start.row][start.column].canCapture then
+    if self:canCaptures(pieceIsRed) and not self.playarea[start.row][start.column].canCapture then
         return false
     end
 
@@ -187,6 +187,13 @@ function board:makeMove(start, destination)
     local moveSuccess = self.playarea[start.row][start.column]:move(self, destination)
     if moveSuccess and not self.playarea[destination.row][destination.column].mustMove then
         self.redTurn = not self.redTurn
+        for _, row in pairs(self.playarea) do
+            for k, square in pairs(row) do
+                if square.isRed ~= nil then
+                    square:getPossibleMoves(self)
+                end
+            end
+        end
     end
     return moveSuccess
 end

@@ -173,8 +173,6 @@ function love.draw()
         else
             text = text .. "2"
         end
-        love.graphics.print(text, x,
-            textOffset + gameGraphics.yPos,
-            nil, textSx, textSy)
+        love.graphics.print(text, x, textOffset + gameGraphics.yPos, nil, textSx, textSy)
     end
 end

@@ -47,7 +47,6 @@ function baseCheckerPiece:check(board, blanks, captures, close, far)
                     table.insert(captures, move.init(self.position))
                     captures[#captures]:addCapture(coordinate.init(close.row, close.column))
                     captures[#captures]:addStep(coordinate.init(far.row, far.column))
-                    self.canCapture = true
                 end
             end
         end
@@ -86,6 +85,7 @@ function baseCheckerPiece:getPossibleMoves(board)
     end
 
     if #captures > 0 then
+        self.canCapture = true
         return captures
     else
         return blanks
