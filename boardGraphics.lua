@@ -1,4 +1,4 @@
-require("checkers.helperFunctions")
+require("helperFunctions")
 
 ---@class boardGraphics holds the checkerBoard graphics
 ---@field boardImage love.Image

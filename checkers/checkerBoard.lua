@@ -1,6 +1,6 @@
 require("checkers.checkerPiece")
 require("checkers.move")
-require("checkers.helperFunctions")
+require("helperFunctions")
 
 
 ---@class board

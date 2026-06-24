@@ -1,4 +1,4 @@
-require("checkers.helperFunctions")
+require("helperFunctions")
 ---@class coordinate
 ---@field row integer
 ---@field column integer

@@ -1,4 +1,4 @@
-require("checkers.helperFunctions")
+require("helperFunctions")
 require("checkers.move")
 
 ---@class baseCheckerPiece @baseCheckerPiece class
