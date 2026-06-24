@@ -1,6 +1,6 @@
-dofile("checkerPiece.lua")
-dofile("move.lua")
-dofile("helperFunctions.lua")
+require("checkers.checkerPiece")
+require("checkers.move")
+require("checkers.helperFunctions")
 
 
 ---@class board

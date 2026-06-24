@@ -1,4 +1,4 @@
-dofile("helperFunctions.lua")
+require("checkers.helperFunctions")
 
 ---@class boardGraphics holds the checkerBoard graphics
 ---@field boardImage love.Image

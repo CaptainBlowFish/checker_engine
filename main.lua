@@ -1,10 +1,7 @@
 if arg[#arg] == "vsc_debug" then require("lldebugger").start() end
 
-dofile("checkerBoard.lua")
-dofile("checkerPiece.lua")
-dofile("move.lua")
-dofile("helperFunctions.lua")
-dofile("boardGraphics.lua")
+require("checkers.checkerBoard")
+require("boardGraphics")
 function love.load()
     game = board.init()
     game:setupCheckers()
@@ -33,22 +30,17 @@ function love.mousepressed(x, y, button)
     print("Row:" .. mousePos.row)
     print("Col:" .. mousePos.column)
     if button == 1 then
-        --print("(" .. x, "," .. y .. ")")
-        --print(table.tostring(mousePos))
         if player.selectedPiece:isPositive() and player.selectedPiece:lessThan(game.height, game.width) then
             if game.playarea[player.selectedPiece.row][player.selectedPiece.column].isRed ~= nil then
                 if game:makeMove(player.selectedPiece, mousePos) then
-                    --print("move Made")
                     player.selectedPiece.row = -1
                     player.selectedPiece.column = -1
                 else
-                    --print("\27[1m\27[31mMOVE NOT POSSIBLE!\27[0m")
                     player.selectedPiece.row = -1
                     player.selectedPiece.column = -1
                 end
             elseif game.playarea[mousePos.row][mousePos.column].isRed ~= nil then
                 player.selectedPiece = mousePos
-                --print("piece chosen")
             else
                 player.selectedPiece.row = -1
                 player.selectedPiece.column = -1
@@ -56,11 +48,9 @@ function love.mousepressed(x, y, button)
         elseif mousePos:lessThan(game.height, game.width) then
             if game.playarea[mousePos.row][mousePos.column].isRed ~= nil then
                 player.selectedPiece = mousePos
-                --print("piece chosen")
             else
                 player.selectedPiece.row = -1
                 player.selectedPiece.column = -1
-                --print("Pointer reset")
             end
         end
     end

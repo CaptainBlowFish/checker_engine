@@ -1,5 +1,5 @@
-dofile("helperFunctions.lua")
-dofile("move.lua")
+require("checkers.helperFunctions")
+require("checkers.move")
 
 ---@class baseCheckerPiece @baseCheckerPiece class
 ---@field init function initializes a new piece object

@@ -1,4 +1,4 @@
-dofile("helperFunctions.lua")
+require("checkers.helperFunctions")
 ---@class coordinate
 ---@field row integer
 ---@field column integer
@@ -34,7 +34,9 @@ end
 ---@param column integer
 ---@return boolean
 function coordinate:lessThan(row, column)
+    ---@diagnostic disable-next-line: undefined-field
     column = column or math.maxinteger
+    ---@diagnostic disable-next-line: undefined-field
     row = row or math.maxinteger
     return self.column <= column and self.row <= row
 end
