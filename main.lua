@@ -2,10 +2,11 @@ if arg[#arg] == "vsc_debug" then require("lldebugger").start() end
 
 require("checkers.checkerBoard")
 require("drawing.boardGraphics")
-
+require("drawing.animations")
 function love.load()
     game = board.init()
     game:setupCheckers()
+    fps = 60
     local screenWidth = 480
     local screenHeight = 340
     gameGraphics = boardGraphics.init(screenWidth, screenHeight)
@@ -21,6 +22,14 @@ function love.load()
     player = {
         selectedPiece = coordinate.init(-1, -1),
     }
+    badMoveMessages = {
+        fontSize = 1 / 1000,
+        love.graphics.newText(font, "Bad Move!"),
+        love.graphics.newText(font, "No!"),
+        love.graphics.newText(font, "Nuh Uh!")
+    }
+    ---@type baseAnimation[]
+    currentAnimations = {}
 end
 
 function love.mousepressed(x, y, button)
@@ -39,6 +48,15 @@ function love.mousepressed(x, y, button)
                 else
                     player.selectedPiece.row = -1
                     player.selectedPiece.column = -1
+
+                    local message = badMoveMessages[math.random(#badMoveMessages)]
+                    local width = message:getWidth() * badMoveMessages.fontSize
+                    local height = message:getHeight() * badMoveMessages.fontSize
+                    local newAnimation = animations.grow.init(message, x - width, y - height / 2, 0, width, height, .01,
+                        .01, 30, true)
+                    newAnimation:scale(gameGraphics.scaleW, gameGraphics.scaleH)
+
+                    table.insert(currentAnimations, newAnimation)
                 end
             elseif game.playarea[mousePos.row][mousePos.column].isRed ~= nil then
                 player.selectedPiece = mousePos
@@ -58,18 +76,29 @@ function love.mousepressed(x, y, button)
 end
 
 function love.update(dt)
-
+    local temp = {}
+    for key, animation in pairs(currentAnimations) do
+        local offset = fps * dt
+        if not currentAnimations[key]:progress(offset) then
+            temp[key] = currentAnimations[key]
+        end
+    end
+    currentAnimations = temp
 end
 
 function love.resize(w, h)
     local originalAspectRatio = gameGraphics.originalScreenWidth / gameGraphics.originalScreenHeight
     local newAspectRatio = w / h
+
     if originalAspectRatio > newAspectRatio then
         gameGraphics:resize(w, w / originalAspectRatio)
     elseif originalAspectRatio < newAspectRatio then
         gameGraphics:resize(h * originalAspectRatio, h)
     else
         gameGraphics:resize(w, h)
+    end
+    for key, _ in pairs(currentAnimations) do
+        currentAnimations[key]:scale(gameGraphics.scaleW, gameGraphics.scaleH)
     end
 end
 
@@ -80,4 +109,7 @@ function love.draw()
     gameGraphics:drawHighlightedPieces(player, game)
     gameGraphics:drawPieces(game)
     gameGraphics:drawStatisticsPannel()
+    for _, animation in pairs(currentAnimations) do
+        animation:draw()
+    end
 end

@@ -1,34 +1,35 @@
 require("helperFunctions")
 
 ---@class baseAnimation base class for all animations
----@field image love.Image
+---@field image love.Image | love.Text
 ---@field x number coordinate
 ---@field y number coordinate
 ---@field r number rotation in radians
 ---@field w number width of the image
 ---@field h number height of the image
----@field totalSteps integer number of steps in the animation before it stops
+---@field totalSteps number number of steps in the animation before it stops
 ---@field selfDelete boolean controls wether the animation deletes itself after stepsTaken > totalSteps
 ---@field init function initializes the animation
 ---@field progress function progresses the animation
+---@field draw function draw the current state of the animation
 baseAnimation = {}
 
----@param image love.Image
+---@param image love.Image | love.Text
 ---@param x number coordinate
 ---@param y number coordinate
----@param r number rotation in radians
----@param w number width of the image
----@param h number height of the image
----@param totalSteps integer number of steps in the animation before it stops
+---@param r number | nil rotation in radians
+---@param w number | nil width of the image
+---@param h number | nil height of the image
+---@param totalSteps number number of steps in the animation before it stops
 ---@param selfDelete boolean controls wether the animation deletes itself after stepsTaken > totalSteps
 ---@return baseAnimation
 function baseAnimation.init(image, x, y, r, w, h, totalSteps, selfDelete)
-    self = table.deepCopy(baseAnimation)
+    local self = table.deepCopy(baseAnimation)
     self.x = x
     self.y = y
-    self.r = r
-    self.w = w
-    self.h = h
+    self.r = r or 0
+    self.w = w or image:getWidth()
+    self.h = h or image:getHeight()
     self.image = image
     self.stepsTaken = 0
     self.totalSteps = totalSteps
@@ -36,7 +37,7 @@ function baseAnimation.init(image, x, y, r, w, h, totalSteps, selfDelete)
     return self
 end
 
----@param steps integer | nil animation steps taken during this call
+---@param steps number | nil animation steps taken during this call
 ---@return boolean @ returns if the animation should be deleted
 function baseAnimation:progress(steps)
     steps = steps or 1
@@ -52,6 +53,14 @@ function baseAnimation:draw()
     love.graphics.draw(self.image, self.x, self.y, self.r, self.w, self.h)
 end
 
+---Resizes the animation based on the given scale
+---@param w number
+---@param h number
+function baseAnimation:scale(w, h)
+    self.w = self.w * w
+    self.h = self.h * h
+end
+
 ---@type {[string]:baseAnimation}
 animations = {}
 
@@ -60,26 +69,35 @@ animations = {}
 ---@field dH number change in height per step
 animations.grow = table.deepCopy(baseAnimation)
 
----@param image love.Image
+---@param image love.Image | love.Text
 ---@param x number coordinate
 ---@param y number coordinate
----@param r number rotation in radians
----@param w number width of the image
----@param h number height of the image
+---@param r number | nil rotation in radians
+---@param w number | nil width of the image
+---@param h number | nil height of the image
 ---@param dW number change in width per step
 ---@param dH number change in height per step
----@param totalSteps integer number of steps in the animation before it stops
+---@param totalSteps number number of steps in the animation before it stops
 ---@param selfDelete boolean controls wether the animation deletes itself after stepsTaken > totalSteps
 ---@return grow
 function animations.grow.init(image, x, y, r, w, h, dW, dH, totalSteps, selfDelete)
     ---@class grow
-    self = baseAnimation.init(image, x, y, r, w, h, totalSteps, selfDelete)
+    local self = table.deepCopy(animations.grow)
+    self.x = x
+    self.y = y
+    self.r = r or 0
+    self.w = w or image:getWidth()
+    self.h = h or image:getHeight()
+    self.image = image
+    self.stepsTaken = 0
+    self.totalSteps = totalSteps
+    self.selfDelete = selfDelete
     self.dW = dW
     self.dH = dH
     return self
 end
 
----@param steps integer | nil animation steps taken during this call
+---@param steps number | nil animation steps taken during this call
 ---@return boolean @ returns if the animation should be deleted
 function animations.grow:progress(steps)
     steps = steps or 1
