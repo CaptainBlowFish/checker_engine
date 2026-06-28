@@ -1,2 +1,6 @@
 moves.dat
 graphics/MockScreen.aseprite
+
+# So it will not track the builds of the game
+checker_engine.app
+checker_engine.love
