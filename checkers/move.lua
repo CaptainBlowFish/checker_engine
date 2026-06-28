@@ -42,6 +42,7 @@ function coordinate:lessThan(row, column)
 end
 
 ---@class move
+---@field start coordinate the starting postition of the piece
 ---@field steps table table holding coodinate objects
 ---@field captures table table holding coordinate objects
 move = {}
@@ -52,7 +53,7 @@ function move.init(start)
     local self = table.deepCopy(move)
     self.steps = {}
     self.captures = {}
-    table.insert(self.steps, start)
+    self.start = start
 
     return self
 end
