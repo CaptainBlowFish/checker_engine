@@ -13,6 +13,13 @@ require("helperFunctions")
 ---@field turns integer how many turns have been taken
 ---@field width integer width of the playarea measured in tiles
 ---@field height integer height of the playarea measured in tiles
+---@field init function
+---@field printBoard function prints the current board to the console
+---@field terminalGame function
+---@field setupCheckers function populates the playarea with checker pieces arranged in a standard fashion
+---@field makeMove function attempt a move returns true if successful
+---@field mustMoves function checks the board for pieces that are marked as 'mustMove'
+---@field canCaptures function checks the board for pieces that are marked as 'canCapture'
 board = {}
 
 ---@param width integer | nil
@@ -45,7 +52,7 @@ function board.init(width, height)
     return self
 end
 
----will print the current board to the console
+---prints the current board to the console
 ---@param printTurn boolean
 ---@param showPieceMoves boolean
 function board:printBoard(printTurn, showPieceMoves)
@@ -128,7 +135,7 @@ function board:terminalGame()
     end
 end
 
----populates the playarea with checker pieces arranged in a standard fassion
+---populates the playarea with checker pieces arranged in a standard fashion
 ---@param rowsPerSide integer | nil number of rows to populate per side defaults to 3
 function board:setupCheckers(rowsPerSide)
     rowsPerSide = rowsPerSide or 3
@@ -224,6 +231,29 @@ function board:canCaptures(red)
         end
     end
     return false
+end
+
+function board:getPossibleMoves(red)
+    red = red or self.redTurn
+    local allPossibleMoves = {}
+    local canCaptures = board:canCaptures(red)
+
+    for _, row in pairs(self.playarea) do
+        for key, square in pairs(row) do
+            if square.isRed == red then
+                for k, possibleMove in pairs(square:getPossibleMoves()) do
+                    if canCaptures then
+                        if #possibleMove.captures > 0 then
+                            table.insert(possibleMove, possibleMove)
+                        end
+                    else
+                        table.insert(allPossibleMoves, possibleMove)
+                    end
+                end
+            end
+        end
+    end
+    return allPossibleMoves
 end
 
 --- game = board.init()

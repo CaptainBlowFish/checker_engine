@@ -60,14 +60,14 @@ end
 
 --#endregion
 
-t = treeNode.init(1)
-for i = 2, 5, 1 do
-    local child = treeNode.init(i)
-    for j = 1, 5, 1 do
-        table.insert(child.children, treeNode.init(j + 5 * i))
-    end
-    table.insert(t.children, child)
-end
-
-ts = table.tostring(t:traverse())
-print(ts)
+---t = treeNode.init(1)
+---for i = 2, 5, 1 do
+---    local child = treeNode.init(i)
+---    for j = 1, 5, 1 do
+---        table.insert(child.children, treeNode.init(j + 5 * i))
+---    end
+---    table.insert(t.children, child)
+---end
+---
+---ts = table.tostring(t:traverse())
+---print(ts)

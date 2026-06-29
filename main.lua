@@ -40,7 +40,7 @@ function love.mousepressed(x, y, button)
     print("Row:" .. mousePos.row)
     print("Col:" .. mousePos.column)
     if button == 1 then
-        if player.selectedPiece:isPositive() and player.selectedPiece:lessThan(game.height, game.width) then
+        if player.selectedPiece:greaterThan(1, 1) and player.selectedPiece:lessThan(game.height, game.width) then
             if game.playarea[player.selectedPiece.row][player.selectedPiece.column].isRed ~= nil then
                 if game:makeMove(player.selectedPiece, mousePos) then
                     player.selectedPiece.row = -1
