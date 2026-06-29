@@ -114,3 +114,53 @@ function animations.grow:progress(steps)
     end
     return false
 end
+
+---@class move : baseAnimation grows an image in all directions equally
+---@field destinationX number destination x coordinate
+---@field destinationY number destination y coordinate
+---@field stepX number ammount that the x coordinate changes per step
+---@field stepY number ammount that the y coordinate changes per step
+animations.move = table.deepCopy(baseAnimation)
+
+---@param image love.Image | love.Text
+---@param x number coordinate
+---@param y number coordinate
+---@param r number | nil rotation in radians
+---@param w number | nil width of the image
+---@param h number | nil height of the image
+---@param destinationX number destination x coordinate
+---@param destinationY number destination y coordinate
+---@param totalSteps number number of steps in the animation before it stops
+---@param selfDelete boolean controls wether the animation deletes itself after stepsTaken > totalSteps
+---@return grow
+function animations.move.init(image, x, y, r, w, h, destinationX, destinationY, totalSteps, selfDelete)
+    ---@class grow
+    local self = table.deepCopy(animations.grow)
+    self.x = x
+    self.y = y
+    self.r = r or 0
+    self.w = w or image:getWidth()
+    self.h = h or image:getHeight()
+    self.image = image
+    self.stepsTaken = 0
+    self.totalSteps = totalSteps
+    self.selfDelete = selfDelete
+    self.destinationX = destinationX
+    self.destinationY = destinationY
+    self.stepX = (destinationX - x) / totalSteps
+    self.stepY = (destinationY - y) / totalSteps
+    return self
+end
+
+---@param steps number | nil animation steps taken during this call
+---@return boolean @ returns if the animation should be deleted
+function animations.move:progress(steps)
+    steps = steps or 1
+    self.x = self.x + self.stepX
+    self.y = self.y + self.stepY
+
+    if self.stepsTaken > self.totalSteps then
+        return self.selfDelete
+    end
+    return false
+end

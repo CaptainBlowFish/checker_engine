@@ -1,13 +1,13 @@
 require("helperFunctions")
 
 ---@class boardGraphics holds the checkerBoard graphics
----@field boardImage love.Image
+---@field board love.Image
 ---@field backDrop love.Image
----@field redPieceImage love.Image
----@field blackPieceImage love.Image
----@field redKingPieceImage love.Image
----@field blackKingPieceImage love.Image
----@field yellowPieceImage love.Image
+---@field redPiece love.Image
+---@field blackPiece love.Image
+---@field redKingPiece love.Image
+---@field blackKingPiece love.Image
+---@field yellowPiece love.Image
 ---@field xPos number
 ---@field yPos number
 ---@field tileWidth number
@@ -24,12 +24,12 @@ require("helperFunctions")
 ---@field originalScreenHeight number
 boardGraphics = {
     backDrop = love.graphics.newImage("graphics/backDrop.png"),
-    boardImage = love.graphics.newImage("graphics/checkerBoard.png"),
-    redPieceImage = love.graphics.newImage("graphics/checker.png"),
-    blackPieceImage = love.graphics.newImage("graphics/checkerAlt.png"),
-    redKingPieceImage = love.graphics.newImage("graphics/checkerKing.png"),
-    blackKingPieceImage = love.graphics.newImage("graphics/checkerKingAlt.png"),
-    yellowPieceImage = love.graphics.newImage("graphics/checkerYellowed.png"),
+    board = love.graphics.newImage("graphics/checkerBoard.png"),
+    redPiece = love.graphics.newImage("graphics/checker.png"),
+    blackPiece = love.graphics.newImage("graphics/checkerAlt.png"),
+    redKingPiece = love.graphics.newImage("graphics/checkerKing.png"),
+    blackKingPiece = love.graphics.newImage("graphics/checkerKingAlt.png"),
+    yellowPiece = love.graphics.newImage("graphics/checkerYellowed.png"),
     xPos = 0,
     yPos = 0,
     tileWidth = 40,
@@ -41,8 +41,8 @@ boardGraphics = {
     scaleW = 1,
     scaleH = 1
 }
-boardGraphics.width = boardGraphics.boardImage:getWidth()
-boardGraphics.height = boardGraphics.boardImage:getWidth()
+boardGraphics.width = boardGraphics.board:getWidth()
+boardGraphics.height = boardGraphics.board:getWidth()
 
 ---@param screenWidth number
 ---@param screenHeight number
@@ -86,7 +86,7 @@ function boardGraphics:drawHighlightedPieces(player, game)
 
             for __, posMove in pairs(possibleMoves) do
                 for _, step in pairs(posMove.steps) do
-                    love.graphics.draw(self.yellowPieceImage,
+                    love.graphics.draw(self.yellowPiece,
                         self.xPos + (step.column - 1) * self.tileWidth +
                         self.boarderWidth +
                         self.pieceInsetW,
@@ -108,15 +108,15 @@ function boardGraphics:drawPieces(game)
                 local pieceImage = nil
                 if square.isRed then
                     if square.pieceName == "king" then
-                        pieceImage = self.redKingPieceImage
+                        pieceImage = self.redKingPiece
                     else
-                        pieceImage = self.redPieceImage
+                        pieceImage = self.redPiece
                     end
                 else
                     if square.pieceName == "king" then
-                        pieceImage = self.blackKingPieceImage
+                        pieceImage = self.blackKingPiece
                     else
-                        pieceImage = self.blackPieceImage
+                        pieceImage = self.blackPiece
                     end
                 end
                 love.graphics.draw(pieceImage,
@@ -132,7 +132,7 @@ function boardGraphics:drawPieces(game)
 end
 
 function boardGraphics:drawBoard()
-    love.graphics.draw(self.boardImage, self.xPos, self.yPos, nil,
+    love.graphics.draw(self.board, self.xPos, self.yPos, nil,
         self.scaleW, self.scaleH)
 end
 
@@ -151,7 +151,7 @@ function boardGraphics:drawStatisticsPannel()
     --- black captured
     local x = self.width + self.xPos + (textOffset) * self.scaleW
     local y = self.yPos + capturedGraphicYOffset * self.scaleH + self.boarderHeight
-    love.graphics.draw(self.blackPieceImage, x, y, nil,
+    love.graphics.draw(self.blackPiece, x, y, nil,
         self.scaleW, self.scaleH)
 
     love.graphics.print("x" .. tostring(game.blackCaptured), x + self.tileWidth, y, nil,
@@ -159,7 +159,7 @@ function boardGraphics:drawStatisticsPannel()
 
     --- red captured
     y = y + self.tileHeight
-    love.graphics.draw(self.redPieceImage, x, y, nil,
+    love.graphics.draw(self.redPiece, x, y, nil,
         self.scaleW, self.scaleH)
 
     love.graphics.print("x" .. tostring(game.redCaptured), x + self.tileWidth, y, nil,
