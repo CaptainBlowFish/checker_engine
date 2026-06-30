@@ -233,20 +233,25 @@ function board:canCaptures(red)
     return false
 end
 
+---get all possible moves that can be made
+---@param red boolean | nil if not included red will default to the color whoose turn it is
+---@return move[]
 function board:getPossibleMoves(red)
     red = red or self.redTurn
     local allPossibleMoves = {}
-    local canCaptures = board:canCaptures(red)
+    local canCaptures = self:canCaptures(red)
 
     for _, row in pairs(self.playarea) do
         for key, square in pairs(row) do
             if square.isRed == red then
-                for k, possibleMove in pairs(square:getPossibleMoves()) do
-                    if canCaptures then
+                if canCaptures then
+                    for k, possibleMove in pairs(square:getPossibleMoves(self)) do
                         if #possibleMove.captures > 0 then
-                            table.insert(possibleMove, possibleMove)
+                            table.insert(allPossibleMoves, possibleMove)
                         end
-                    else
+                    end
+                else
+                    for k, possibleMove in pairs(square:getPossibleMoves(self)) do
                         table.insert(allPossibleMoves, possibleMove)
                     end
                 end
