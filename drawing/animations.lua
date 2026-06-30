@@ -9,9 +9,6 @@ require("helperFunctions")
 ---@field h number height of the image
 ---@field totalSteps number number of steps in the animation before it stops
 ---@field selfDelete boolean controls wether the animation deletes itself after stepsTaken > totalSteps
----@field init function initializes the animation
----@field progress function progresses the animation
----@field draw function draw the current state of the animation
 baseAnimation = {}
 
 ---@param image love.Image | love.Text

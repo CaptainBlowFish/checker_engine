@@ -57,9 +57,6 @@ end
 ---@field start coordinate the starting postition of the piece
 ---@field steps table table holding coodinate objects
 ---@field captures table table holding coordinate objects
----@field init function
----@field addStep function adds a step to the list of steps
----@field addCapture function adds a capture to the list of captures
 move = {}
 
 ---@param start coordinate

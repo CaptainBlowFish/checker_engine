@@ -7,8 +7,6 @@ require("helperFunctions")
 ---@field data any
 ---@field weight number
 ---@field children treeNode[]
----@field init function initializes a tree
----@field traverseData function returns a list of all the data contained in the tree
 treeNode = {}
 
 ---initializes a tree

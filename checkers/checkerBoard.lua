@@ -13,13 +13,6 @@ require("helperFunctions")
 ---@field turns integer how many turns have been taken
 ---@field width integer width of the playarea measured in tiles
 ---@field height integer height of the playarea measured in tiles
----@field init function
----@field printBoard function prints the current board to the console
----@field terminalGame function
----@field setupCheckers function populates the playarea with checker pieces arranged in a standard fashion
----@field makeMove function attempt a move returns true if successful
----@field mustMoves function checks the board for pieces that are marked as 'mustMove'
----@field canCaptures function checks the board for pieces that are marked as 'canCapture'
 board = {}
 
 ---@param width integer | nil

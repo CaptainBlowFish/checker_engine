@@ -2,15 +2,10 @@ require("helperFunctions")
 require("checkers.move")
 
 ---@class baseCheckerPiece @baseCheckerPiece class
----@field init function initializes a new piece object
 ---@field isRed boolean
 ---@field position coordinate postition on the game board
 ---@field canCapture boolean
 ---@field mustMove boolean used to enforce manditory multiple captures
----@field capture function
----@field check function
----@field getPossibleMoves function
----@field move function
 ---@field pieceName string the name of the type of piece
 baseCheckerPiece = {}
 
